@@ -5,12 +5,14 @@
 #include "extra.h"
 #include "hashmap.h"
 
+//Estructura para cada Item
 typedef struct{
     char nombre[50];
     int peso;
     int valor;
 }Item;
 
+//Estructura para las direcciones podibles
 typedef struct{
     int arriba;
     int abajo;
@@ -18,6 +20,7 @@ typedef struct{
     int derecha;
 }Direccion;
 
+//Estructura para cada escenario(nivel)
 typedef struct{
     int id;
     char nombre[50];
@@ -41,7 +44,8 @@ void leer_escenarios(HashMap * juego){
         Escenarios * escenario = (Escenarios*)malloc(sizeof(Escenarios));
         escenario->id = atoi(campos[0]);
         strcnpy(escenario->nombre, campos[1], sizeof(escenario->nombre));
-        
+        strcnpy(escenario->descripcion, campos[2], sizeof(escenario->descripcion));
+        strcnpy(escenario->items_disp, campos[3], sizeof(escenario->items_disp));
     }
 }
 
