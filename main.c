@@ -22,13 +22,25 @@ typedef struct{
 
 //Estructura para cada escenario(nivel)
 typedef struct{
-    int id;
+    char id[100];
     char nombre[50];
     char descripcion[500];
     List * items_disp;
-    Direccion  dir_posibles[4];
+    Direccion  dir_posibles;
     char esFinal[10];
 }Escenarios;
+
+void mostrarMenuPrincipal() {
+    limpiarPantalla();
+    puts("========================================");
+    puts("            MMORPG NO LINEAL          ");
+    puts("========================================");
+  
+    puts("1) Cargar Escenarios");
+    puts("2) Jugar en Solitario");
+    puts("3) Jugar Multijugador");
+    puts("4) Salir");
+  }
 
 void leer_escenarios(HashMap * juego){
     FILE *archivo = fopen("data/graphquest.csv", "r");
@@ -42,18 +54,18 @@ void leer_escenarios(HashMap * juego){
 
     while ((campos = leer_linea_csv(archivo, ',')) != NULL){
         Escenarios * escenario = (Escenarios*)malloc(sizeof(Escenarios));
-        escenario->id = atoi(campos[0]);
-        strcnpy(escenario->nombre, campos[1], sizeof(escenario->nombre));
-        strcnpy(escenario->descripcion, campos[2], sizeof(escenario->descripcion));
+        strncpy(escenario->id, campos[0], sizeof(escenario->id));
+        strncpy(escenario->nombre, campos[1], sizeof(escenario->nombre));
+        strncpy(escenario->descripcion, campos[2], sizeof(escenario->descripcion));
         
-        List * items = split_string(campos[3], ';');
+        List * items = split_string(campos[3], ";");
         List * lista_items = list_create();
 
         for (char * item = list_first(items); item != NULL; item = list_next(items)){
-            List * valor = split_string(item, ',');
-            Item * nuevo_item = (Item*)malloc(sizeof(nuevo_item));
+            List * valor = split_string(item, ",");
+            Item * nuevo_item = (Item*)malloc(sizeof(Item));
 
-            strcnpy(nuevo_item->nombre, list_first(valor), sizeof(nuevo_item->nombre));
+            strncpy(nuevo_item->nombre, list_first(valor), sizeof(nuevo_item->nombre));
             nuevo_item->valor = atoi(list_next(valor));
             nuevo_item->peso = atoi(list_next(valor));
 
@@ -66,16 +78,44 @@ void leer_escenarios(HashMap * juego){
         escenario->items_disp = lista_items;
 
 
-        escenario->dir_posibles->arriba = atoi(campos[4]);
-        escenario->dir_posibles->abajo = atoi(campos[5]);
-        escenario->dir_posibles->izquierda = atoi(campos[6]);
-        escenario->dir_posibles->derecha = atoi(campos[7]);
+        escenario->dir_posibles.arriba = atoi(campos[4]);
+        escenario->dir_posibles.abajo = atoi(campos[5]);
+        escenario->dir_posibles.izquierda = atoi(campos[6]);
+        escenario->dir_posibles.derecha = atoi(campos[7]);
 
-        strcpy(escenario->esFinal, campos[8]);
+        strncpy(escenario->esFinal, campos[8], sizeof(escenario->esFinal));
+
+        insertMap(juego, escenario->id, escenario);
     }
+    fclose(archivo);
+    puts("Escenarios cargados con exito");
 }
 
 int main(){
+    
+    char opcion;
     HashMap * juego = createMap(100);
+     do{
+        mostrarMenuPrincipal();
+        printf("Ingrese su opcion: ");
+        scanf(" %c", &opcion);
+
+        switch (opcion)
+        {
+        case '1':
+            leer_escenarios(juego);
+            break;
+        case '2':
+            break;
+        case '3':
+            break;
+        case '4':
+            break;
+        default:
+            puts("Opcion no valida. Intente de nuevo.");
+            break;
+        }
+        presioneTeclaParaContinuar();
+    }while(opcion != '4');
     return 0;
 }
