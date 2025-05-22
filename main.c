@@ -143,18 +143,10 @@ void mostrar_escenario(Jugador * player){
     
     if(strcmp(player->actual->esFinal, "No") == 0){
         printf("Direcciones posibles: ");
-        if (player->actual->dir_posibles.arriba != -1){
-            printf("Arriba");
-        }
-        if(player->actual->dir_posibles.abajo != -1){
-            printf("Abajo");
-        }
-        if(player->actual->dir_posibles.izquierda != -1){
-            printf("Izquierda");
-        }
-        if(player->actual->dir_posibles.derecha != -1){
-            printf("Derecha");
-        }
+        if (player->actual->dir_posibles.arriba != -1) printf("Arriba ");
+        if(player->actual->dir_posibles.abajo != -1) printf("Abajo ");
+        if(player->actual->dir_posibles.izquierda != -1) printf("Izquierda ");
+        if(player->actual->dir_posibles.derecha != -1) printf("Derecha ");
         printf("\n");
     }
     else puts("Felicidades lograste salir del laberinto con un buen botin");
