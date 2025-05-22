@@ -25,8 +25,8 @@ typedef struct{
     int id;
     char nombre[50];
     char descripcion[500];
-    Item items_disp;
-    Direccion dir_posibles;
+    List * items_disp;
+    Direccion  dir_posibles[4];
     char esFinal[10];
 }Escenarios;
 
@@ -47,18 +47,31 @@ void leer_escenarios(HashMap * juego){
         strcnpy(escenario->descripcion, campos[2], sizeof(escenario->descripcion));
         
         List * items = split_string(campos[3], ';');
+        List * lista_items = list_create();
 
         for (char * item = list_first(items); item != NULL; item = list_next(items)){
             List * valor = split_string(item, ',');
-            char * item_name = list_first(valor);
-            int valor_item = atoi(list_next(valor));
-            int peso_item = atoi(list_next(valor));
+            Item * nuevo_item = (Item*)malloc(sizeof(nuevo_item));
+
+            strcnpy(nuevo_item->nombre, list_first(valor), sizeof(nuevo_item->nombre));
+            nuevo_item->valor = atoi(list_next(valor));
+            nuevo_item->peso = atoi(list_next(valor));
+
+            list_pushBack(lista_items, nuevo_item);
 
             list_clean(valor);
             free(valor);
         }
 
-        
+        escenario->items_disp = lista_items;
+
+
+        escenario->dir_posibles->arriba = atoi(campos[4]);
+        escenario->dir_posibles->abajo = atoi(campos[5]);
+        escenario->dir_posibles->izquierda = atoi(campos[6]);
+        escenario->dir_posibles->derecha = atoi(campos[7]);
+
+        strcpy(escenario->esFinal, campos[8]);
     }
 }
 
