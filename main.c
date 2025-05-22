@@ -40,7 +40,21 @@ void mostrarMenuPrincipal() {
     puts("2) Jugar en Solitario");
     puts("3) Jugar Multijugador");
     puts("4) Salir");
-  }
+}
+
+void mostrarMenuJuego() {
+    limpiarPantalla();
+    puts("========================================");
+    puts("            MMORPG NO LINEAL          ");
+    puts("========================================");
+  
+    puts("1) Descripcion del escenario actual");
+    puts("2) Lista de items disponibles");
+    puts("3) Tiempo restante");
+    puts("4) Inventario del jugador");
+    puts("5) Direcciones");
+    puts("6) Volver al menu principal");
+}
 
 void leer_escenarios(HashMap * juego){
     FILE *archivo = fopen("data/graphquest.csv", "r");
@@ -106,8 +120,60 @@ int main(){
             leer_escenarios(juego);
             break;
         case '2':
+            char opcion_s;
+            do{
+                mostrarMenuJuego();
+                printf("Ingrese su opcion: ");
+                scanf(" %c", &opcion_s);
+
+                switch (opcion_s)
+                {
+                case '1':
+                    break;
+                case '2':
+                    break;
+                case '3':
+                    break;
+                case '4':
+                    break;
+                case '5':
+                    break;
+                case '6':
+                    break;
+                default:
+                    puts("Opcion no valida. Intente de nuevo.");
+                    break;
+                }
+                presioneTeclaParaContinuar();
+            }while(opcion != '5');
             break;
         case '3':
+            char opcion_m;
+            do{
+                mostrarMenuJuego();
+                printf("Ingrese su opcion: ");
+                scanf(" %c", &opcion_m);
+
+                switch (opcion_m)
+                {
+                case '1':
+                    break;
+                case '2':
+                    break;
+                case '3':
+                    break;
+                case '4':
+                    break;
+                case '5':
+                    break;
+                case '6':
+                    break;
+                default:
+                    puts("Opcion no valida. Intente de nuevo.");
+                    break;
+                }
+                presioneTeclaParaContinuar();
+            }while(opcion != '5');
             break;
         case '4':
             break;
