@@ -37,7 +37,7 @@ void mostrarMenuPrincipal() {
     puts("========================================");
   
     puts("1) Cargar Escenarios");
-    puts("2) Jugar en Solitario");
+    puts("2) Jugar en solitario");
     puts("3) Jugar Multijugador");
     puts("4) Salir");
 }
@@ -120,6 +120,7 @@ int main(){
             leer_escenarios(juego);
             break;
         case '2':
+        //Menu para opcines de modo un jugador
             char opcion_s;
             do{
                 mostrarMenuJuego();
@@ -148,6 +149,7 @@ int main(){
             }while(opcion != '5');
             break;
         case '3':
+        //Menu para opciones del multijugador
             char opcion_m;
             do{
                 mostrarMenuJuego();
