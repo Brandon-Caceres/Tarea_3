@@ -45,7 +45,20 @@ void leer_escenarios(HashMap * juego){
         escenario->id = atoi(campos[0]);
         strcnpy(escenario->nombre, campos[1], sizeof(escenario->nombre));
         strcnpy(escenario->descripcion, campos[2], sizeof(escenario->descripcion));
-        strcnpy(escenario->items_disp, campos[3], sizeof(escenario->items_disp));
+        
+        List * items = split_string(campos[3], ';');
+
+        for (char * item = list_first(items); item != NULL; item = list_next(items)){
+            List * valor = split_string(item, ',');
+            char * item_name = list_first(valor);
+            int valor_item = atoi(list_next(valor));
+            int peso_item = atoi(list_next(valor));
+
+            list_clean(valor);
+            free(valor);
+        }
+
+        
     }
 }
 
