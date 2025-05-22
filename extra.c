@@ -5,50 +5,54 @@
 #define MAX_FIELDS 300
 
 char **leer_linea_csv(FILE *archivo, char separador) {
-  static char linea[MAX_LINE_LENGTH];
-  static char *campos[MAX_FIELDS];
-  char *ptr, *start;
-  int idx = 0;
+    static char linea[MAX_LINE_LENGTH];
+    static char *campos[MAX_FIELDS];
+    char *ptr, *start;
+    int idx = 0;
 
-  if (fgets(linea, MAX_LINE_LENGTH, archivo) == NULL) {
-    return NULL; // No hay más líneas para leer
-  }
-
-  // Eliminar salto de linea
-  linea[strcspn(linea, "\n")] = '\0';
-
-  ptr = start = linea;
-  while (*ptr) {
-    if (idx >= MAX_FIELDS - 1)
-      break;
-
-    if (*ptr == '\"') { // Inicio de un campo entrecomillado
-      start = ++ptr;    // Saltar la comilla inicial
-      while (*ptr && !(*ptr == '\"' && *(ptr + 1) == separador))
-        ptr++;
-    } else { // Campo sin comillas
-      start = ptr;
-      while (*ptr && *ptr != separador)
-        ptr++;
+    if (fgets(linea, MAX_LINE_LENGTH, archivo) == NULL) {
+        return NULL; // No hay más líneas para leer
     }
 
-    if (*ptr) {
-      *ptr = '\0'; // Reemplazar comilla final o separador por terminación
-      ptr++;
-      if (*ptr == separador)
-        ptr++;
+    // Eliminar salto de línea
+    linea[strcspn(linea, "\n")] = '\0';
+
+    ptr = linea;
+    while (*ptr && idx < MAX_FIELDS - 1) {
+        // Manejar campos vacíos consecutivos
+        if (*ptr == separador) {
+            campos[idx++] = "";
+            ptr++;
+            continue;
+        }
+
+        // Inicio del campo
+        start = ptr;
+
+        // Buscar fin del campo
+        while (*ptr && *ptr != separador)
+            ptr++;
+
+        // Terminar string y avanzar
+        if (*ptr) {
+            *ptr = '\0';
+            ptr++;
+        }
+
+        campos[idx++] = start;
     }
 
-    // Quitar comilla final si existe
-    if (*(ptr - 2) == '\"') {
-      *(ptr - 2) = '\0';
+    // Si termina en separador, agregar último campo vacío
+    if (*(ptr - 1) == separador && idx < MAX_FIELDS - 1) {
+        campos[idx++] = "";
     }
 
-    campos[idx++] = start;
-  }
+    // Rellenar con campos vacíos si hay menos de MAX_FIELDS
+    while (idx < MAX_FIELDS)
+        campos[idx++] = "";
 
-  campos[idx] = NULL; // Marcar el final del array
-  return campos;
+    campos[idx] = NULL;
+    return campos;
 }
 
 List *split_string(const char *str, const char *delim) {

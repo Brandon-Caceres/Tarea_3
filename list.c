@@ -132,3 +132,15 @@ void list_clean(List *L) {
       list_popFront(L);
     }
 }
+
+int list_size(List *L) {
+    if (L == NULL) return 0;
+
+    int contador = 0;
+    Node *nodo = L->head;
+    while (nodo != NULL) {
+        contador++;
+        nodo = nodo->next;
+    }
+    return contador;
+}
