@@ -5,6 +5,8 @@
 #include "extra.h"
 #include "hashmap.h"
 
+typedef struct Escenarios Escenarios;
+
 //Estructura para cada Item
 typedef struct{
     char nombre[50];
@@ -14,21 +16,25 @@ typedef struct{
 
 //Estructura para las direcciones podibles
 typedef struct{
-    int arriba;
-    int abajo;
-    int izquierda;
-    int derecha;
+    Escenarios * arriba;
+    Escenarios * abajo;
+    Escenarios * izquierda;
+    Escenarios * derecha;
 }Direccion;
 
 //Estructura para cada escenario(nivel)
-typedef struct{
+struct Escenarios{
     char id[100];
     char nombre[50];
     char descripcion[500];
     List * items_disp;
     Direccion  dir_posibles;
     char esFinal[10];
-}Escenarios;
+    char id_arriba[3];
+    char id_abajo[3];
+    char id_izquierda[3];
+    char id_derecha[3];
+};
 
 typedef struct{
     char nombre[50];
@@ -103,10 +109,10 @@ void leer_escenarios(HashMap * juego){
         escenario->items_disp = lista_items;
 
 
-        escenario->dir_posibles.arriba = atoi(campos[4]);
-        escenario->dir_posibles.abajo = atoi(campos[5]);
-        escenario->dir_posibles.izquierda = atoi(campos[6]);
-        escenario->dir_posibles.derecha = atoi(campos[7]);
+        strncpy(escenario->id_arriba, campos[4], sizeof(escenario->id_arriba));
+        strncpy(escenario->id_abajo, campos[5], sizeof(escenario->id_abajo));
+        strncpy(escenario->id_izquierda, campos[6], sizeof(escenario->id_izquierda));
+        strncpy(escenario->id_derecha, campos[7], sizeof(escenario->id_derecha));
 
         strncpy(escenario->esFinal, campos[8], sizeof(escenario->esFinal));
 
@@ -114,6 +120,28 @@ void leer_escenarios(HashMap * juego){
     }
     fclose(archivo);
     puts("Escenarios cargados con exito");
+
+    Pair * par = firstMap(juego);
+    while ( par!= NULL){
+        Escenarios * escenario = (Escenarios*)par->value;
+        if (strcmp(escenario->id_arriba, "-1") != 0){
+            Pair * aux = searchMap(juego, escenario->id_arriba);
+            if (aux != NULL) escenario->dir_posibles.arriba = (Escenarios*)aux->value;
+        }
+        if (strcmp(escenario->id_abajo, "-1") != 0){
+            Pair * aux = searchMap(juego, escenario->id_abajo);
+            if (aux != NULL) escenario->dir_posibles.abajo = (Escenarios*)aux->value;
+        }
+        if (strcmp(escenario->id_izquierda, "-1") != 0){
+            Pair * aux = searchMap(juego, escenario->id_izquierda);
+            if (aux != NULL) escenario->dir_posibles.izquierda = (Escenarios*)aux->value;
+        }
+        if (strcmp(escenario->id_derecha, "-1") != 0){
+            Pair * aux = searchMap(juego, escenario->id_derecha);
+            if (aux != NULL) escenario->dir_posibles.derecha = (Escenarios*)aux->value;
+        }
+        par = nextMap(juego);
+    }
 }
 
 void mostrar_escenario(Jugador * player){
@@ -143,10 +171,10 @@ void mostrar_escenario(Jugador * player){
     
     if(strcmp(player->actual->esFinal, "No") == 0){
         printf("Direcciones posibles: ");
-        if (player->actual->dir_posibles.arriba != -1) printf("Arriba ");
-        if(player->actual->dir_posibles.abajo != -1) printf("Abajo ");
-        if(player->actual->dir_posibles.izquierda != -1) printf("Izquierda ");
-        if(player->actual->dir_posibles.derecha != -1) printf("Derecha ");
+        if (player->actual->dir_posibles.arriba != NULL) printf("Arriba ");
+        if (player->actual->dir_posibles.abajo != NULL) printf("Abajo ");
+        if (player->actual->dir_posibles.izquierda != NULL) printf("Izquierda ");
+        if (player->actual->dir_posibles.derecha != NULL) printf("Derecha ");
         printf("\n");
     }
     else puts("Felicidades lograste salir del laberinto con un buen botin");
