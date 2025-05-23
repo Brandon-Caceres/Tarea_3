@@ -223,6 +223,49 @@ void recoger_items(Jugador * player){
     }
 }
 
+void descartar_items(Jugador *player){
+    if (player->inventario == NULL && list_first(player->inventario) == NULL){
+        puts("No existen items en el inventario");
+        return;
+    }
+
+    while (1){
+        puts("Items del inventario:");
+        int i = 1;
+        Item * arreglo_items[100];
+
+        for (Item * item = list_first(player->inventario); item != NULL; item = list_next(player->inventario)){
+            printf("%d) %s, Peso: %dkg, Valor: $%d\n", i, item->nombre, item->peso, item->valor);
+            arreglo_items[i - 1] = item;
+            i++;
+        }
+        printf("%d) Cancelar\n");
+
+        int opcion;
+        printf("Elige el numero del item a descartar");
+        scanf(" %d", &opcion);
+
+        if (opcion <= 0 || opcion >= i){
+            puts("Cancelando u opcion invalida");
+            break;
+        }
+
+        Item * seleccionado = arreglo_items[opcion - 1];
+        list_pushBack(player->actual->items_disp, seleccionado);
+        player->peso -= seleccionado->peso;
+        player->puntaje -= seleccionado->valor;
+
+        for (Item * item = list_first(player->inventario); item != NULL; item = list_next(player->inventario)){
+            if (item == seleccionado){
+                list_popCurrent(player->inventario);
+                break;
+            }
+        }
+
+        printf("Descartaste: %s\n", seleccionado->nombre);
+    }
+}
+
 int main(){
     
     char opcion;
