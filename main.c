@@ -64,8 +64,6 @@ void mostrarMenuPrincipal() {
 }
 
 void mostrarMenuSolo() {
-    limpiarPantalla();
-  
     puts("1) Recoger Item(s)");
     puts("2) Descartar Item(s)");
     puts("3) Avanzar en una Dirección");
@@ -166,8 +164,8 @@ void mostrar_escenario(Jugador * player){
     }
     else printf("   Vacio\n");
 
-    printf("Peso total: %d", player->peso);
-    printf("Puntaje acumulado: %d", player->puntaje);
+    printf("Peso total: %d\n", player->peso);
+    printf("Puntaje acumulado: %d\n", player->puntaje);
     
     if(strcmp(player->actual->esFinal, "No") == 0){
         printf("Direcciones posibles: ");
@@ -181,7 +179,7 @@ void mostrar_escenario(Jugador * player){
 }
 
 void recoger_items(Jugador * player){
-    if (player->actual->items_disp == NULL && list_first(player->actual->items_disp) == NULL){
+    if (player->actual->items_disp == NULL || list_first(player->actual->items_disp) == NULL){
         puts("No hay items disponibles en este escenario :(");
         return;
     }
@@ -224,7 +222,7 @@ void recoger_items(Jugador * player){
 }
 
 void descartar_items(Jugador *player){
-    if (player->inventario == NULL && list_first(player->inventario) == NULL){
+    if (player->inventario == NULL || list_first(player->inventario) == NULL){
         puts("No existen items en el inventario");
         return;
     }
@@ -266,10 +264,63 @@ void descartar_items(Jugador *player){
     }
 }
 
+void seleccionOpcion(Jugador *player, HashMap *juego) {
+    char op;
+
+    do {
+        limpiarPantalla(); 
+        mostrar_escenario(player);
+        mostrarMenuSolo();
+        printf("Ingrese su opcion: ");
+        scanf(" %c", &op);
+
+        switch (op) {
+            case '1':
+                printf("Recogiendo Item\n");
+                recoger_items(player);
+                break;
+            case '2':
+                printf("Descartar Item\n");
+                descartar_items(player);
+                break;
+            case '3':
+                printf("Avanzar en una direccion\n");
+                //avanzarEscenario(player, juego);
+                break;
+            case '4':
+                printf("Reiniciar Partida\n");
+                break;
+            case '5':
+                return;
+            default:
+                printf("Opcion no valida. Intente de nuevo.\n");
+                break;
+        }
+
+        presioneTeclaParaContinuar();
+    } while (op != '6');
+}
+
+Jugador * crear_jugador(char nombre[], HashMap * juego){
+    Jugador * player = (Jugador*)malloc(sizeof(Jugador));
+    strcpy(player->nombre, nombre);
+    Pair * inicio = firstMap(juego);
+    player->actual = inicio->value;
+    player->inventario = list_create();
+    player->peso = 0;
+    player->puntaje = 0;
+    player->tRestante = 10.0;
+
+    return player;
+}
+
 int main(){
     
     char opcion;
+    char name[50];
     HashMap * juego = createMap(100);
+    Jugador *p1 = NULL;
+    Jugador *p2 = NULL;
      do{
         mostrarMenuPrincipal();
         printf("Ingrese su opcion: ");
@@ -281,27 +332,27 @@ int main(){
             leer_escenarios(juego);
             break;
         case '2':
-            mostrarMenuSolo();
-            char op;
-            printf("Ingrese su opcion: ");
-            switch (op)
-            {
-            case '1':
-                break;
-            case '2':
-                break;
-            case '3':
-                break;
-            case '4':
-                break;
-            case '5':
-                break;
-            default:
-                break;
+            if (p1 == NULL){
+                printf("Escribe nombre de usuario: ");
+                scanf(" %49s", name);
+                getchar();
+                p1 = crear_jugador(name, juego);
             }
-            scanf("%s", &op);
+            //mostrar_escenario(p1);
+            //mostrarMenuSolo();
+            seleccionOpcion(p1, juego);
+            free(p1);
             break;
         case '3':
+            if (p1 == NULL) {
+                scanf(" %49s", name);
+                getchar();
+                p1 = crear_jugador(name, juego);
+            }
+            if (p2 == NULL) {
+                scanf(" %49s", name);
+                p2 = crear_jugador(name, juego);
+            }
             break;
         case '4':
             break;
