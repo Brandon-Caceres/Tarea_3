@@ -180,6 +180,49 @@ void mostrar_escenario(Jugador * player){
     else puts("Felicidades lograste salir del laberinto con un buen botin");
 }
 
+void recoger_items(Jugador * player){
+    if (player->actual->items_disp == NULL && list_first(player->actual->items_disp) == NULL){
+        puts("No hay items disponibles en este escenario :(");
+        return;
+    }
+
+    while (1){
+        puts("Items disponibles para recoger");
+        int i = 1;
+        Item * arreglo_items[100];
+
+        for (Item * item = list_first(player->actual->items_disp); item != NULL; item = list_next(player->actual->items_disp)){
+            printf("%d) %s, Peso: %dkg, Valor: $%d\n", i, item->nombre, item->peso, item->valor);
+            arreglo_items[i - 1] = item;
+            i++;
+        }
+        printf("%d) Cancelar\n");
+
+        int opcion;
+        printf("Elige el numero del item a recoger: ");
+        scanf(" %d", &opcion);
+
+        if (opcion <= 0 || opcion >= i){
+            puts("Cancelando u opcion invalida");
+            break;
+        }
+
+        Item * seleccionado = arreglo_items[opcion - 1];
+        list_pushBack(player->inventario, seleccionado);
+        player->peso += seleccionado->peso;
+        player->puntaje += seleccionado->valor;
+        
+        for (Item * item = list_first(player->actual->items_disp); item != NULL; item = list_next(player->actual->items_disp)) {
+            if (item == seleccionado) {
+                list_popCurrent(player->actual->items_disp);
+                break;
+            }
+        }
+
+        printf("Recogiste: %s\n", seleccionado->nombre);
+    }
+}
+
 int main(){
     
     char opcion;
