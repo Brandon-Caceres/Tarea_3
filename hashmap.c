@@ -148,3 +148,17 @@ Pair * nextMap(HashMap * map) {
     
     return NULL;
 }
+
+void cleanMap(HashMap *map) {
+    if (map == NULL) return;
+
+    for (int i = 0; i < map->capacity; i++) {
+        if (map->buckets[i] != NULL) {
+            free(map->buckets[i]);
+            map->buckets[i] = NULL;
+        }
+    }
+
+    map->size = 0;
+    map->current = -1;
+}

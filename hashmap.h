@@ -23,4 +23,6 @@ Pair * nextMap(HashMap * table);
 
 void enlarge(HashMap * map);
 
+void cleanMap(HashMap * map);
+
 #endif /* HashMap_h */

@@ -95,8 +95,8 @@ void leer_escenarios(HashMap * juego){
             Item * nuevo_item = (Item*)malloc(sizeof(Item));
 
             strncpy(nuevo_item->nombre, list_first(valor), sizeof(nuevo_item->nombre));
-            nuevo_item->valor = atoi(list_next(valor));
             nuevo_item->peso = atoi(list_next(valor));
+            nuevo_item->valor = atoi(list_next(valor));
 
             list_pushBack(lista_items, nuevo_item);
 
@@ -194,7 +194,7 @@ void recoger_items(Jugador * player){
             arreglo_items[i - 1] = item;
             i++;
         }
-        printf("%d) Cancelar\n");
+        printf("%d) Cancelar\n", i);
 
         int opcion;
         printf("Elige el numero del item a recoger: ");
@@ -218,6 +218,9 @@ void recoger_items(Jugador * player){
         }
 
         printf("Recogiste: %s\n", seleccionado->nombre);
+
+        float tiempo = (player->peso + 1) / 10.0;
+        player->tRestante -= tiempo;
     }
 }
 
@@ -237,7 +240,7 @@ void descartar_items(Jugador *player){
             arreglo_items[i - 1] = item;
             i++;
         }
-        printf("%d) Cancelar\n");
+        printf("%d) Cancelar\n", i);
 
         int opcion;
         printf("Elige el numero del item a descartar");
@@ -261,7 +264,95 @@ void descartar_items(Jugador *player){
         }
 
         printf("Descartaste: %s\n", seleccionado->nombre);
+
+        float tiempo = (player->peso + 1) / 10.0;
+        player->tRestante = tiempo;
     }
+}
+
+void avanzarEscenario(Jugador *player, HashMap *juego) {
+    printf("\nEscoge la dirección para avanzar:\n");
+
+    // Mostrar solo las direcciones disponibles
+    if (strcmp(player->actual->id_arriba, "-1") != 0)
+        printf("W - Arriba\n");
+    if (strcmp(player->actual->id_abajo, "-1") != 0)
+        printf("S - Abajo\n");
+    if (strcmp(player->actual->id_izquierda, "-1") != 0)
+        printf("A - Izquierda\n");
+    if (strcmp(player->actual->id_derecha, "-1") != 0)
+        printf("D - Derecha\n");
+
+    char dir;
+    printf("Direccion (W/A/S/D): ");
+    scanf(" %c", &dir);
+    
+    char *id_destino = NULL;
+
+    switch (dir) {
+        case 'W':
+            if (strcmp(player->actual->id_arriba, "-1") == 0) {
+                printf("No hay camino hacia arriba.\n");
+                return;
+            }
+            id_destino = player->actual->id_arriba;
+            break;
+        case 'S':
+            if (strcmp(player->actual->id_abajo, "-1") == 0) {
+                printf("No hay camino hacia abajo.\n");
+                return;
+            }
+            id_destino = player->actual->id_abajo;
+            break;
+        case 'A':
+            if (strcmp(player->actual->id_izquierda, "-1") == 0) {
+                printf("No hay camino hacia la izquierda.\n");
+                return;
+            }
+            id_destino = player->actual->id_izquierda;
+            break;
+        case 'D':
+            if (strcmp(player->actual->id_derecha, "-1") == 0) {
+                printf("No hay camino hacia la derecha.\n");
+                return;
+            }
+            id_destino = player->actual->id_derecha;
+            break;
+        default:
+            printf("Direccion no valida. Usa solo W, A, S o D.\n");
+            return;
+    }
+    Pair * aux = searchMap(juego, id_destino);
+    Escenarios *nuevo = (Escenarios *)aux->value;
+    if (nuevo != NULL) {
+        player->actual = nuevo;
+        player->tRestante -= 1;
+
+        printf("\nAvanzaste al escenario: %s\n", nuevo->nombre);
+        printf("Descripcion: %s\n", nuevo->descripcion);
+    } else {
+        printf("Error: Escenario con ID %s no encontrado.\n", id_destino);
+    }
+}
+
+void limpiar_juego(HashMap * juego){
+    Pair * par = firstMap(juego);
+    while (par != NULL){
+        Escenarios * escenario = (Escenarios*)par->value;
+        if (escenario->items_disp != NULL) list_clean(escenario->items_disp);
+        free(escenario->items_disp);
+        free(escenario);
+        par = nextMap(juego);
+    }
+    cleanMap(juego);
+}
+
+void reiniciar_jugador(Jugador * player, HashMap * juego){
+    player->actual = firstMap(juego)->value;
+    list_clean(player->inventario);
+    player->peso = 0;
+    player->puntaje = 0;
+    player->tRestante = 10.0;
 }
 
 void seleccionOpcion(Jugador *player, HashMap *juego) {
@@ -285,10 +376,13 @@ void seleccionOpcion(Jugador *player, HashMap *juego) {
                 break;
             case '3':
                 printf("Avanzar en una direccion\n");
-                //avanzarEscenario(player, juego);
+                avanzarEscenario(player, juego);
                 break;
             case '4':
                 printf("Reiniciar Partida\n");
+                limpiar_juego(juego);
+                leer_escenarios(juego);
+                reiniciar_jugador(player, juego);
                 break;
             case '5':
                 return;
@@ -338,20 +432,36 @@ int main(){
                 getchar();
                 p1 = crear_jugador(name, juego);
             }
-            //mostrar_escenario(p1);
-            //mostrarMenuSolo();
             seleccionOpcion(p1, juego);
             free(p1);
             break;
         case '3':
             if (p1 == NULL) {
+                printf("Escribe nombre de jugador 1: ");
                 scanf(" %49s", name);
                 getchar();
                 p1 = crear_jugador(name, juego);
             }
             if (p2 == NULL) {
+                printf("Escribe nombre de jugador 2: ");
                 scanf(" %49s", name);
                 p2 = crear_jugador(name, juego);
+            }
+            int turno = 0;
+            Jugador *jugadores[2] = {p1, p2};
+
+            while (p1->tRestante > 0 || p2->tRestante > 0) {
+                Jugador *actual = jugadores[turno];
+
+                if (actual->tRestante <= 0) {
+                    printf("\n%s ya no tiene tiempo restante.\n", actual->nombre);
+                    turno = 1 - turno;
+                    continue;
+                }
+                seleccionOpcion(actual, juego);
+                printf("\nTurno de %s (Tiempo restante: %d)\n", actual->nombre, actual->tRestante);
+                
+                turno = 1 - turno;
             }
             break;
         case '4':
