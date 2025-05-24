@@ -433,10 +433,12 @@ void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego) {
         mostrar_escenario(actual);
         presioneTeclaParaContinuar();
         mostrarMenuSolo();
+        puts("6) SALTAR TURNO");
+
         printf("Ingrese su opcion (%s): ", actual->nombre);
         scanf(" %c", &op);
         
-        if (op != '1' && op != '2' && op != '3' && op != '4' && op != '5') {
+        if (op != '1' && op != '2' && op != '3' && op != '4' && op != '5' && op != '6') {
             printf("OPCION NO VALIDA. Intente de nuevo.\n");
             continue;
         }
@@ -462,13 +464,14 @@ void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego) {
                 reiniciar_juego(player1, juego);
                 reiniciar_jugador(player2, juego);
                 return;
+            case '6':
+                turno = 1 - turno;
         }
 
         printf("\nTurno de %s (Tiempo restante: %.2f)\n", actual->nombre, actual->tRestante);
         if (mov == max_mov) { 
             turno = 1 - turno;
         }
-        //turno = 1 - turno;
         presioneTeclaParaContinuar();
     }
 }
