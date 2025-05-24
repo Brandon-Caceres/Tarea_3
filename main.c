@@ -362,6 +362,9 @@ void limpiar_juego(HashMap * juego){
 
 void reiniciar_jugador(Jugador * player, HashMap * juego){
     player->actual = firstMap(juego)->value;
+    for (Item * item = list_first(player->inventario); item != NULL; item = list_next(player->inventario)) {
+        free(item);
+    }
     list_clean(player->inventario);
     player->peso = 0;
     player->puntaje = 0;
