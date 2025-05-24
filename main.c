@@ -102,7 +102,7 @@ void leer_escenarios(HashMap * juego){
         escenario->dir_posibles.abajo = NULL;
         escenario->dir_posibles.izquierda = NULL;
         escenario->dir_posibles.derecha = NULL;
-        
+
         strncpy(escenario->id, campos[0], sizeof(escenario->id));
         strncpy(escenario->nombre, campos[1], sizeof(escenario->nombre));
         strncpy(escenario->descripcion, campos[2], sizeof(escenario->descripcion));
@@ -212,11 +212,11 @@ void mostrar_escenario(Jugador * player){
     else puts("Felicidades lograste salir del laberinto con un buen botin!!!");
 }
 
-void recoger_items(Jugador * player){
+int recoger_items(Jugador * player){
     limpiarPantalla();
     if (player->actual->items_disp == NULL || list_first(player->actual->items_disp) == NULL){
         puts("No hay items disponibles en este escenario :(");
-        return;
+        return 0;
     }
 
     while (1){
@@ -238,7 +238,8 @@ void recoger_items(Jugador * player){
 
         if (opcion <= 0 || opcion >= i){
             puts("Cancelando u opcion invalida");
-            break;
+            presioneTeclaParaContinuar();
+            return 0;
         }
 
         Item * seleccionado = arreglo_items[opcion - 1];
@@ -256,15 +257,15 @@ void recoger_items(Jugador * player){
         printf("Recogiste: %s\n", seleccionado->nombre);
 
         player->tRestante -= 1;
-        break;
+        return 1;
     }
 }
 
-void descartar_items(Jugador *player){
+int descartar_items(Jugador *player){
     limpiarPantalla();
     if (player->inventario == NULL || list_first(player->inventario) == NULL){
         puts("No existen items en el inventario");
-        return;
+        return 0;
     }
 
     while (1){
@@ -286,7 +287,8 @@ void descartar_items(Jugador *player){
 
         if (opcion <= 0 || opcion >= i){
             puts("Cancelando u opcion invalida");
-            break;
+            presioneTeclaParaContinuar();
+            return 0;
         }
 
         Item * seleccionado = arreglo_items[opcion - 1];
@@ -304,7 +306,7 @@ void descartar_items(Jugador *player){
         printf("Descartaste: %s\n", seleccionado->nombre);
 
         player->tRestante -= 1;
-        break;
+        return 1;
     }
 }
 
@@ -330,7 +332,7 @@ void avanzarEscenario(Jugador *player) {
             if (actual->dir_posibles.arriba)
                 player->actual = actual->dir_posibles.arriba;
             else
-                printf("NO UN HAY CAMINO HACIA ARRIBA.\n");
+                printf("NO HAY UN CAMINO HACIA ARRIBA.\n");
             break;
         case 'S':
         case 's':
@@ -448,6 +450,7 @@ void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego) {
         }
 
         int max_mov = 2;
+        int accion_exitosa = 0;
 
         limpiarPantalla();
         mostrar_escenario(actual);
@@ -464,12 +467,10 @@ void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego) {
 
         switch (op) {
             case '1':
-                recoger_items(actual);
-                mov++;
+                accion_exitosa = recoger_items(actual);
                 break;
             case '2':
-                descartar_items(actual);
-                mov++;
+                accion_exitosa = descartar_items(actual);
                 break;
             case '3':
                 avanzarEscenario(actual);
@@ -477,6 +478,7 @@ void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego) {
                 break;
             case '4':
                 turno = 1 - turno;
+                mov = 0;
                 break;
             case '5':
                 reiniciar_juego(player1, juego);
@@ -488,9 +490,12 @@ void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego) {
                 return;
         }
 
+        if (accion_exitosa) mov++;
+
         printf("\nTurno de %s (Tiempo restante: %.2f)\n", actual->nombre, actual->tRestante);
         if (mov == max_mov) { 
             turno = 1 - turno;
+            mov = 0;
         }
         presioneTeclaParaContinuar();
     }
