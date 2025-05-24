@@ -46,7 +46,7 @@ typedef struct{
 }Jugador;
 
 void mostrarMenuPrincipal() {
-    limpiarPantalla();
+    //limpiarPantalla();
     //encontre el meme jajaja
     /*albion online es un mmorpg no lineal en el que escribes 
     tu propia historia sin limitarte a seguir un camino prefijado, 
@@ -62,18 +62,29 @@ void mostrarMenuPrincipal() {
     puts("3) Salir");
 }
 
-void mostrarMenuSolo() {
+void mostrarMenu(char *texto) {
     limpiarPantalla();
     puts("========================================");
-    puts("       MMORPG NO LINEAL SOLITARIO       ");
+    if (strcmp(texto, "SOLO") == 0) puts("       MMORPG NO LINEAL SOLITARIO       ");
+    if (strcmp(texto, "MJ") == 0)   puts("      MMORPG NO LINEAL MULTIJUGADOR       ");
     puts("========================================");
   
     puts("1) RECOGER ITEM(s)");
     puts("2) DESCARTAR ITEM(s)");
     puts("3) AVANZAR EN UNA DIRECCION");
-    puts("4) REINICIAR PARTIDA");
-    puts("5) REGRESAR AL MENU PRINCIPAL");
+    if (strcmp(texto, "SOLO") == 0)
+    {
+        puts("4) REINICIAR PARTIDA");
+        puts("5) REGRESAR AL MENU PRINCIPAL");
+    }
+    if (strcmp(texto, "MJ") == 0)
+    {
+        puts("4) SALTAR TURNO");
+        puts("5) REINICIAR PARTIDA");
+        puts("6) REGRESAR AL MENU PRINCIPAL");
+    }
 }
+    
 
 void leer_escenarios(HashMap * juego){
     FILE *archivo = fopen("data/graphquest.csv", "r");
@@ -87,6 +98,11 @@ void leer_escenarios(HashMap * juego){
 
     while ((campos = leer_linea_csv(archivo, ',')) != NULL){
         Escenarios * escenario = (Escenarios*)malloc(sizeof(Escenarios));
+        escenario->dir_posibles.arriba = NULL;
+        escenario->dir_posibles.abajo = NULL;
+        escenario->dir_posibles.izquierda = NULL;
+        escenario->dir_posibles.derecha = NULL;
+        
         strncpy(escenario->id, campos[0], sizeof(escenario->id));
         strncpy(escenario->nombre, campos[1], sizeof(escenario->nombre));
         strncpy(escenario->descripcion, campos[2], sizeof(escenario->descripcion));
@@ -99,8 +115,8 @@ void leer_escenarios(HashMap * juego){
             Item * nuevo_item = (Item*)malloc(sizeof(Item));
 
             strncpy(nuevo_item->nombre, list_first(valor), sizeof(nuevo_item->nombre));
-            nuevo_item->peso = atoi(list_next(valor));
             nuevo_item->valor = atoi(list_next(valor));
+            nuevo_item->peso = atoi(list_next(valor));
 
             list_pushBack(lista_items, nuevo_item);
 
@@ -118,6 +134,7 @@ void leer_escenarios(HashMap * juego){
         strncpy(escenario->esFinal, campos[8], sizeof(escenario->esFinal));
 
         insertMap(juego, escenario->id, escenario);
+
     }
     fclose(archivo);
 
@@ -384,7 +401,7 @@ void seleccionOpcion(Jugador *player, HashMap *juego) {
         limpiarPantalla();
         mostrar_escenario(player);
         presioneTeclaParaContinuar();
-        mostrarMenuSolo();
+        mostrarMenu("SOLO");
         printf("Ingrese su opcion: ");
         scanf(" %c", &op);
 
@@ -435,8 +452,7 @@ void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego) {
         limpiarPantalla();
         mostrar_escenario(actual);
         presioneTeclaParaContinuar();
-        mostrarMenuSolo();
-        puts("6) SALTAR TURNO");
+        mostrarMenu("MJ");
 
         printf("Ingrese su opcion (%s): ", actual->nombre);
         scanf(" %c", &op);
@@ -460,15 +476,16 @@ void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego) {
                 mov++;
                 break;
             case '4':
-                reiniciar_juego(player1, juego);
-                reiniciar_jugador(player2, juego);
+                turno = 1 - turno;
                 break;
             case '5':
                 reiniciar_juego(player1, juego);
                 reiniciar_jugador(player2, juego);
-                return;
+                break;
             case '6':
-                turno = 1 - turno;
+                reiniciar_juego(player1, juego);
+                reiniciar_jugador(player2, juego);
+                return;
         }
 
         printf("\nTurno de %s (Tiempo restante: %.2f)\n", actual->nombre, actual->tRestante);
