@@ -106,11 +106,10 @@ void leer_escenarios(HashMap * juego){
 
         escenario->items_disp = lista_items;
 
-
-        strncpy(escenario->id_arriba, campos[4], sizeof(escenario->id_arriba));
-        strncpy(escenario->id_abajo, campos[5], sizeof(escenario->id_abajo));
-        strncpy(escenario->id_izquierda, campos[6], sizeof(escenario->id_izquierda));
-        strncpy(escenario->id_derecha, campos[7], sizeof(escenario->id_derecha));
+        strcpy(escenario->id_arriba, campos[4]);
+        strcpy(escenario->id_abajo, campos[5]);
+        strcpy(escenario->id_izquierda, campos[6]);
+        strcpy(escenario->id_derecha, campos[7]);
 
         strncpy(escenario->esFinal, campos[8], sizeof(escenario->esFinal));
 
@@ -119,27 +118,61 @@ void leer_escenarios(HashMap * juego){
     fclose(archivo);
     puts("Escenarios cargados con exito");
 
+    List * claves = list_create();
     Pair * par = firstMap(juego);
-    while ( par!= NULL){
-        Escenarios * escenario = (Escenarios*)par->value;
+    while (par != NULL) {
+        list_pushBack(claves, par->key);
+        par = nextMap(juego);
+    }
+
+    // Ahora recorremos esa lista para validar enlaces sin afectar el iterador de juego
+    for (char * clave = list_first(claves); clave != NULL; clave = list_next(claves)) {
+        Pair * pEscenario = searchMap(juego, clave);
+        if (!pEscenario) continue;
+
+        Escenarios * escenario = (Escenarios*)pEscenario->value;
+        printf("Validando enlaces para escenario: %s\n", escenario->nombre);
+
         if (strcmp(escenario->id_arriba, "-1") != 0){
             Pair * aux = searchMap(juego, escenario->id_arriba);
-            if (aux != NULL) escenario->dir_posibles.arriba = (Escenarios*)aux->value;
+            if (aux != NULL) {
+                escenario->dir_posibles.arriba = (Escenarios*)aux->value;
+                printf("Enlace: %s -> arriba -> %s\n", escenario->nombre, ((Escenarios*)aux->value)->nombre);
+            } else {
+                printf("ERROR: Escenario %s no encuentra enlace arriba (%s)\n", escenario->nombre, escenario->id_arriba);
+            }
         }
         if (strcmp(escenario->id_abajo, "-1") != 0){
             Pair * aux = searchMap(juego, escenario->id_abajo);
-            if (aux != NULL) escenario->dir_posibles.abajo = (Escenarios*)aux->value;
+            if (aux != NULL) {
+                escenario->dir_posibles.abajo = (Escenarios*)aux->value;
+                printf("Enlace: %s -> abajo -> %s\n", escenario->nombre, ((Escenarios*)aux->value)->nombre);
+            } else {
+                printf("ERROR: Escenario %s no encuentra enlace abajo (%s)\n", escenario->nombre, escenario->id_abajo);
+            }
         }
         if (strcmp(escenario->id_izquierda, "-1") != 0){
             Pair * aux = searchMap(juego, escenario->id_izquierda);
-            if (aux != NULL) escenario->dir_posibles.izquierda = (Escenarios*)aux->value;
+            if (aux != NULL) {
+                escenario->dir_posibles.izquierda = (Escenarios*)aux->value;
+                printf("Enlace: %s -> izquierda -> %s\n", escenario->nombre, ((Escenarios*)aux->value)->nombre);
+            } else {
+                printf("ERROR: Escenario %s no encuentra enlace izquierda (%s)\n", escenario->nombre, escenario->id_izquierda);
+            }
         }
         if (strcmp(escenario->id_derecha, "-1") != 0){
             Pair * aux = searchMap(juego, escenario->id_derecha);
-            if (aux != NULL) escenario->dir_posibles.derecha = (Escenarios*)aux->value;
+            if (aux != NULL) {
+                escenario->dir_posibles.derecha = (Escenarios*)aux->value;
+                printf("Enlace: %s -> derecha -> %s\n", escenario->nombre, ((Escenarios*)aux->value)->nombre);
+            } else {
+                printf("ERROR: Escenario %s no encuentra enlace derecha (%s)\n", escenario->nombre, escenario->id_derecha);
+            }
         }
-        par = nextMap(juego);
     }
+
+    list_clean(claves);
+    free(claves);    
 }
 
 void mostrar_escenario(Jugador * player){
@@ -219,8 +252,7 @@ void recoger_items(Jugador * player){
 
         printf("Recogiste: %s\n", seleccionado->nombre);
 
-        float tiempo = (player->peso + 1) / 10.0;
-        player->tRestante -= tiempo;
+        player->tRestante -= 1;
     }
 }
 
@@ -265,74 +297,64 @@ void descartar_items(Jugador *player){
 
         printf("Descartaste: %s\n", seleccionado->nombre);
 
-        float tiempo = (player->peso + 1) / 10.0;
-        player->tRestante = tiempo;
+        player->tRestante -= 1;
     }
 }
 
-void avanzarEscenario(Jugador *player, HashMap *juego) {
+void avanzarEscenario(Jugador *player) {
+    Escenarios* actual = player->actual;
+    char dir;
+
     printf("\nEscoge la dirección para avanzar:\n");
 
     // Mostrar solo las direcciones disponibles
-    if (strcmp(player->actual->id_arriba, "-1") != 0)
-        printf("W - Arriba\n");
-    if (strcmp(player->actual->id_abajo, "-1") != 0)
-        printf("S - Abajo\n");
-    if (strcmp(player->actual->id_izquierda, "-1") != 0)
-        printf("A - Izquierda\n");
-    if (strcmp(player->actual->id_derecha, "-1") != 0)
-        printf("D - Derecha\n");
+    if (actual->dir_posibles.arriba) printf("W - Arriba\n");
+    if (actual->dir_posibles.abajo) printf("S - Abajo\n");
+    if (actual->dir_posibles.izquierda) printf("A - Izquierda\n");
+    if (actual->dir_posibles.derecha) printf("D - Derecha\n");
 
-    char dir;
     printf("Direccion (W/A/S/D): ");
     scanf(" %c", &dir);
-    
-    char *id_destino = NULL;
 
     switch (dir) {
         case 'W':
-            if (strcmp(player->actual->id_arriba, "-1") == 0) {
+        case 'w':
+            if (actual->dir_posibles.arriba)
+                player->actual = actual->dir_posibles.arriba;
+            else
                 printf("No hay camino hacia arriba.\n");
-                return;
-            }
-            id_destino = player->actual->id_arriba;
             break;
         case 'S':
-            if (strcmp(player->actual->id_abajo, "-1") == 0) {
-                printf("No hay camino hacia abajo.\n");
-                return;
-            }
-            id_destino = player->actual->id_abajo;
+        case 's':
+            if (actual->dir_posibles.abajo)
+                player->actual = actual->dir_posibles.abajo;
+            else
+                printf("No puedes ir hacia abajo.\n");
             break;
         case 'A':
-            if (strcmp(player->actual->id_izquierda, "-1") == 0) {
-                printf("No hay camino hacia la izquierda.\n");
-                return;
-            }
-            id_destino = player->actual->id_izquierda;
+        case 'a':
+            if (actual->dir_posibles.izquierda)
+                player->actual = actual->dir_posibles.izquierda;
+            else
+                printf("No puedes ir hacia la izquierda.\n");
             break;
         case 'D':
-            if (strcmp(player->actual->id_derecha, "-1") == 0) {
-                printf("No hay camino hacia la derecha.\n");
-                return;
-            }
-            id_destino = player->actual->id_derecha;
+        case 'd':
+            if (actual->dir_posibles.derecha)
+                player->actual = actual->dir_posibles.derecha;
+            else
+                printf("No puedes ir hacia la derecha.\n");
             break;
         default:
             printf("Direccion no valida. Usa solo W, A, S o D.\n");
             return;
     }
-    Pair * aux = searchMap(juego, id_destino);
-    Escenarios *nuevo = (Escenarios *)aux->value;
-    if (nuevo != NULL) {
-        player->actual = nuevo;
-        player->tRestante -= 1;
 
-        printf("\nAvanzaste al escenario: %s\n", nuevo->nombre);
-        printf("Descripcion: %s\n", nuevo->descripcion);
-    } else {
-        printf("Error: Escenario con ID %s no encontrado.\n", id_destino);
-    }
+    printf("\nAvanzaste al escenario: %s\n", player->actual->nombre);
+    printf("Descripcion: %s\n", player->actual->descripcion);
+    
+    float tiempo = (player->peso + 1) / 10.0;
+    player->tRestante -= tiempo;
 }
 
 void limpiar_juego(HashMap * juego){
@@ -376,7 +398,7 @@ void seleccionOpcion(Jugador *player, HashMap *juego) {
                 break;
             case '3':
                 printf("Avanzar en una direccion\n");
-                avanzarEscenario(player, juego);
+                avanzarEscenario(player);
                 break;
             case '4':
                 printf("Reiniciar Partida\n");
@@ -395,6 +417,43 @@ void seleccionOpcion(Jugador *player, HashMap *juego) {
     } while (op != '6');
 }
 
+void seleccionOpcionMJ(Jugador *player, HashMap *juego) {
+    char op;
+    limpiarPantalla(); 
+    mostrar_escenario(player);
+    mostrarMenuSolo();
+    printf("Ingrese su opcion (%s): ", player->nombre);
+    scanf(" %c", &op);
+
+    switch (op) {
+        case '1':
+            printf("Recogiendo Item\n");
+            recoger_items(player);
+            break;
+        case '2':
+            printf("Descartar Item\n");
+            descartar_items(player);
+            break;
+        case '3':
+            printf("Avanzar en una direccion\n");
+            avanzarEscenario(player);
+            break;
+        case '4':
+            printf("Reiniciar Partida\n");
+            limpiar_juego(juego);
+            leer_escenarios(juego);
+            reiniciar_jugador(player, juego);
+            break;
+        case '5':
+            break;
+        default:
+            printf("Opcion no valida. Intente de nuevo.\n");
+            break;
+    }
+
+    presioneTeclaParaContinuar();
+}
+
 Jugador * crear_jugador(char nombre[], HashMap * juego){
     Jugador * player = (Jugador*)malloc(sizeof(Jugador));
     strcpy(player->nombre, nombre);
@@ -406,6 +465,21 @@ Jugador * crear_jugador(char nombre[], HashMap * juego){
     player->tRestante = 10.0;
 
     return player;
+}
+
+void liberarJugador(Jugador *player) {
+    if (player == NULL) return;
+
+    if (player->nombre != NULL) {
+        free(player->nombre);
+    }
+
+    if (player->inventario != NULL) {
+        list_clean(player->inventario);
+        free(player->inventario);
+    }
+
+    free(player);
 }
 
 int main(){
@@ -433,7 +507,7 @@ int main(){
                 p1 = crear_jugador(name, juego);
             }
             seleccionOpcion(p1, juego);
-            free(p1);
+            liberarJugador(p1);
             break;
         case '3':
             if (p1 == NULL) {
@@ -458,9 +532,9 @@ int main(){
                     turno = 1 - turno;
                     continue;
                 }
-                seleccionOpcion(actual, juego);
-                printf("\nTurno de %s (Tiempo restante: %d)\n", actual->nombre, actual->tRestante);
                 
+                printf("\nTurno de %s (Tiempo restante: %d)\n", actual->nombre, actual->tRestante);
+                seleccionOpcionMJ(actual, juego);
                 turno = 1 - turno;
             }
             break;
