@@ -516,6 +516,7 @@ int main(){
             seleccionOpcionMJ(p1, p2, juego);
             break;
         case '3':
+        puts("ABANDONANDO EL JUEGO");
             break;
         default:
             puts("OPCION NO VALIDA");
