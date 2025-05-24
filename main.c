@@ -394,7 +394,7 @@ void seleccionOpcion(Jugador *player, HashMap *juego) {
             case '5':
                 return;
             default:
-                printf("Opcion no valida. Intente de nuevo.\n");
+                printf("OPCION NO VALIDA.\n");
                 break;
         }
         
@@ -404,43 +404,57 @@ void seleccionOpcion(Jugador *player, HashMap *juego) {
     } while (op != '6');
 }
 
-void seleccionOpcionMJ(Jugador *player, HashMap *juego) {
+void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego) {
 
     char op;
-    limpiarPantalla(); 
-    mostrarMenuSolo();
-    printf("Ingrese su opcion (%s): ", player->nombre);
-    scanf(" %c", &op);
+    int turno = 0;
+    Jugador *jugadores[2] = {player1, player2};
+    while ((player1->tRestante > 0 && strcmp(player1->actual->nombre, "Salida") != 0) || 
+           (player2->tRestante > 0 && strcmp(player2->actual->nombre, "Salida") != 0)) {
 
-    switch (op) {
-        case '1':
-            printf("Recogiendo Item\n");
-            recoger_items(player);
-            break;
-        case '2':
-            printf("Descartar Item\n");
-            descartar_items(player);
-            break;
-        case '3':
-            printf("Avanzar en una direccion\n");
-            avanzarEscenario(player);
-            break;
-        case '4':
-            printf("Reiniciar Partida\n");
-            limpiar_juego(juego);
-            leer_escenarios(juego);
-            reiniciar_jugador(player, juego);
-            break;
-        case '5':
-            return;
-        default:
-            printf("Opcion no valida. Intente de nuevo.\n");
-            break;
+        Jugador *actual = jugadores[turno];
+
+        if (actual->tRestante <= 0 || strcmp(actual->actual->nombre, "Salida") == 0) {
+            printf("\n%s ya no tiene tiempo restante o llego al final.\n", actual->nombre);
+            turno = 1 - turno;
+            continue;
+        }
+
+        limpiarPantalla(); 
+        mostrarMenuSolo();
+        printf("Ingrese su opcion (%s): ", actual->nombre);
+        scanf(" %c", &op);
+        
+        switch (op) {
+            case '1':
+                recoger_items(actual);
+                break;
+            case '2':
+                descartar_items(actual);
+                break;
+            case '3':
+                avanzarEscenario(actual);
+                break;
+            case '4':
+                limpiar_juego(juego);
+                leer_escenarios(juego);
+                reiniciar_jugador(player1, juego);
+                reiniciar_jugador(player2, juego);
+                break;
+            case '5':
+                return;
+            default:
+                printf("OPCION NO VALIDA.\n");
+                break;
+        }
+
+        printf("\nTurno de %s (Tiempo restante: %d)\n", actual->nombre, actual->tRestante);
+        
+        turno = 1 - turno;
+        limpiarPantalla();
+        mostrar_escenario(actual);
+        presioneTeclaParaContinuar();
     }
-            
-    limpiarPantalla();
-    mostrar_escenario(player);
-    presioneTeclaParaContinuar();
 }
 
 Jugador * crear_jugador(char nombre[], HashMap * juego){
@@ -461,6 +475,7 @@ int main(){
     char opcion;
     char name[50];
     HashMap * juego = createMap(100);
+    Jugador *p = NULL;
     Jugador *p1 = NULL;
     Jugador *p2 = NULL;
      do{
@@ -474,47 +489,33 @@ int main(){
             leer_escenarios(juego);
             break;
         case '2':
-            if (p1 == NULL){
-                printf("Escribe nombre de usuario: ");
+            if (p == NULL){
+                printf("NOMBRE DE JUGADOR: ");
                 scanf(" %49s", name);
                 getchar();
-                p1 = crear_jugador(name, juego);
+                p = crear_jugador(name, juego);
             }
-            seleccionOpcion(p1, juego);
+            seleccionOpcion(p, juego);
             break;
         case '3':
             if (p1 == NULL) {
-                printf("Escribe nombre de jugador 1: ");
+                printf("NOMBRE DEL JUGADOR 1: ");
                 scanf(" %49s", name);
                 getchar();
                 p1 = crear_jugador(name, juego);
             }
             if (p2 == NULL) {
-                printf("Escribe nombre de jugador 2: ");
+                printf("NOMBRE DEL JUGADOR 2: ");
                 scanf(" %49s", name);
                 p2 = crear_jugador(name, juego);
             }
             int turno = 0;
-            Jugador *jugadores[2] = {p1, p2};
-
-            while (p1->tRestante > 0 || p2->tRestante > 0) {
-                Jugador *actual = jugadores[turno];
-
-                if (actual->tRestante <= 0) {
-                    printf("\n%s ya no tiene tiempo restante.\n", actual->nombre);
-                    turno = 1 - turno;
-                    continue;
-                }
-                
-                printf("\nTurno de %s (Tiempo restante: %d)\n", actual->nombre, actual->tRestante);
-                seleccionOpcionMJ(actual, juego);
-                turno = 1 - turno;
-            }
+            seleccionOpcionMJ(p1, p2, juego);
             break;
         case '4':
             break;
         default:
-            puts("Opcion no valida. Intente de nuevo.");
+            puts("OPCION NO VALIDA");
             break;
         }
         presioneTeclaParaContinuar();
