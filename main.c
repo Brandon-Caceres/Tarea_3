@@ -57,13 +57,13 @@ void mostrarMenuPrincipal() {
     puts("            MMORPG NO LINEAL          ");
     puts("========================================");
   
-    puts("1) Cargar Escenarios");
-    puts("2) Jugar en solitario");
-    puts("3) Jugar Multijugador");
-    puts("4) Salir");
+    puts("1) Jugar en solitario");
+    puts("2) Jugar Multijugador");
+    puts("3) Salir");
 }
 
 void mostrarMenuSolo() {
+    limpiarPantalla();
     puts("========================================");
     puts("       MMORPG NO LINEAL SOLITARIO       ");
     puts("========================================");
@@ -120,7 +120,6 @@ void leer_escenarios(HashMap * juego){
         insertMap(juego, escenario->id, escenario);
     }
     fclose(archivo);
-    puts("Escenarios cargados con exito");
 
     List * claves = list_create();
     Pair * par = firstMap(juego);
@@ -240,6 +239,7 @@ void recoger_items(Jugador * player){
         printf("Recogiste: %s\n", seleccionado->nombre);
 
         player->tRestante -= 1;
+        break;
     }
 }
 
@@ -287,6 +287,7 @@ void descartar_items(Jugador *player){
         printf("Descartaste: %s\n", seleccionado->nombre);
 
         player->tRestante -= 1;
+        break;
     }
 }
 
@@ -367,11 +368,19 @@ void reiniciar_jugador(Jugador * player, HashMap * juego){
     player->tRestante = 10.0;
 }
 
+void reiniciar_juego(Jugador * player, HashMap * juego){
+    limpiar_juego(juego);
+    leer_escenarios(juego);
+    reiniciar_jugador(player, juego);
+}
+
 void seleccionOpcion(Jugador *player, HashMap *juego) {
     char op;
 
     do {
-        limpiarPantalla(); 
+        limpiarPantalla();
+        mostrar_escenario(player);
+        presioneTeclaParaContinuar();
         mostrarMenuSolo();
         printf("Ingrese su opcion: ");
         scanf(" %c", &op);
@@ -387,19 +396,15 @@ void seleccionOpcion(Jugador *player, HashMap *juego) {
                 avanzarEscenario(player);
                 break;
             case '4':
-                limpiar_juego(juego);
-                leer_escenarios(juego);
-                reiniciar_jugador(player, juego);
+                reiniciar_juego(player, juego);
                 break;
             case '5':
+                reiniciar_juego(player, juego);
                 return;
             default:
                 printf("OPCION NO VALIDA.\n");
                 break;
         }
-        
-        limpiarPantalla();
-        mostrar_escenario(player);
         presioneTeclaParaContinuar();
     } while (op != '6');
 }
@@ -420,7 +425,9 @@ void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego) {
             continue;
         }
 
-        limpiarPantalla(); 
+        limpiarPantalla();
+        mostrar_escenario(actual);
+        presioneTeclaParaContinuar();
         mostrarMenuSolo();
         printf("Ingrese su opcion (%s): ", actual->nombre);
         scanf(" %c", &op);
@@ -436,23 +443,21 @@ void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego) {
                 avanzarEscenario(actual);
                 break;
             case '4':
-                limpiar_juego(juego);
-                leer_escenarios(juego);
-                reiniciar_jugador(player1, juego);
+                reiniciar_juego(player1, juego);
                 reiniciar_jugador(player2, juego);
                 break;
             case '5':
+                reiniciar_juego(player1, juego);
+                reiniciar_jugador(player2, juego);
                 return;
             default:
                 printf("OPCION NO VALIDA.\n");
                 break;
         }
 
-        printf("\nTurno de %s (Tiempo restante: %d)\n", actual->nombre, actual->tRestante);
+        printf("\nTurno de %s (Tiempo restante: %.2f)\n", actual->nombre, actual->tRestante);
         
         turno = 1 - turno;
-        limpiarPantalla();
-        mostrar_escenario(actual);
         presioneTeclaParaContinuar();
     }
 }
@@ -478,7 +483,8 @@ int main(){
     Jugador *p = NULL;
     Jugador *p1 = NULL;
     Jugador *p2 = NULL;
-     do{
+    leer_escenarios(juego);
+    do{
         mostrarMenuPrincipal();
         printf("Ingrese su opcion: ");
         scanf(" %c", &opcion);
@@ -486,9 +492,6 @@ int main(){
         switch (opcion)
         {
         case '1':
-            leer_escenarios(juego);
-            break;
-        case '2':
             if (p == NULL){
                 printf("NOMBRE DE JUGADOR: ");
                 scanf(" %49s", name);
@@ -497,7 +500,7 @@ int main(){
             }
             seleccionOpcion(p, juego);
             break;
-        case '3':
+        case '2':
             if (p1 == NULL) {
                 printf("NOMBRE DEL JUGADOR 1: ");
                 scanf(" %49s", name);
@@ -512,13 +515,13 @@ int main(){
             int turno = 0;
             seleccionOpcionMJ(p1, p2, juego);
             break;
-        case '4':
+        case '3':
             break;
         default:
             puts("OPCION NO VALIDA");
             break;
         }
         presioneTeclaParaContinuar();
-    }while(opcion != '4');
+    }while(opcion != '3');
     return 0;
 }
