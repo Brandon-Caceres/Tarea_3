@@ -413,6 +413,7 @@ void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego) {
 
     char op;
     int turno = 0;
+    int mov = 0;
     Jugador *jugadores[2] = {player1, player2};
     while ((player1->tRestante > 0 && strcmp(player1->actual->nombre, "Salida") != 0) || 
            (player2->tRestante > 0 && strcmp(player2->actual->nombre, "Salida") != 0)) {
@@ -422,8 +423,11 @@ void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego) {
         if (actual->tRestante <= 0 || strcmp(actual->actual->nombre, "Salida") == 0) {
             printf("\n%s ya no tiene tiempo restante o llego al final.\n", actual->nombre);
             turno = 1 - turno;
+            mov = 0;
             continue;
         }
+
+        int max_mov = 2;
 
         limpiarPantalla();
         mostrar_escenario(actual);
@@ -440,12 +444,15 @@ void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego) {
         switch (op) {
             case '1':
                 recoger_items(actual);
+                mov++;
                 break;
             case '2':
                 descartar_items(actual);
+                mov++;
                 break;
             case '3':
                 avanzarEscenario(actual);
+                mov++;
                 break;
             case '4':
                 reiniciar_juego(player1, juego);
@@ -458,7 +465,10 @@ void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego) {
         }
 
         printf("\nTurno de %s (Tiempo restante: %.2f)\n", actual->nombre, actual->tRestante);
-        turno = 1 - turno;
+        if (mov == max_mov) { 
+            turno = 1 - turno;
+        }
+        //turno = 1 - turno;
         presioneTeclaParaContinuar();
     }
 }
