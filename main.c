@@ -42,7 +42,7 @@ typedef struct{
     List *inventario;
     int peso;
     int puntaje;
-    float tRestante;
+    int tRestante;
 }Jugador;
 
 void mostrarMenuPrincipal() {
@@ -186,19 +186,19 @@ void mostrar_escenario(Jugador * player){
     }
     else printf("NO SE ENCONTRARON ITEMS EN ESTA SALA\n");
 
-    printf("TIEMPO RESTANTE: %.2f\n", player->tRestante);
+    printf("TIEMPO RESTANTE: %d segundos\n", player->tRestante);
     
     
     if (player->inventario != NULL && list_first(player->inventario) != NULL){
         puts("INVENTARIO: ");
         for (Item * objeto = list_first(player->inventario); objeto != NULL; objeto = list_next(player->inventario)){
-            printf("  - %s, %dkg, valor %d\n", objeto->nombre, objeto->peso, objeto->valor);
+            printf("  - %s, %dkg, valor %dpts\n", objeto->nombre, objeto->peso, objeto->valor);
         }
     }
     else printf("EL INVENTARIO ESTA VACIO\n");
 
-    printf("PESO TOTAL: %d\n", player->peso);
-    printf("PUNTAJE ACUMULADO: %d\n", player->puntaje);
+    printf("PESO TOTAL: %dkg\n", player->peso);
+    printf("PUNTAJE ACUMULADO: %dpts\n", player->puntaje);
     
     if(strcmp(player->actual->esFinal, "No") == 0){
         printf("DIRECCIONES POSIBLES: ");
@@ -309,7 +309,7 @@ int descartar_items(Jugador *player){
     }
 }
 
-void avanzarEscenario(Jugador *player) {    
+int avanzarEscenario(Jugador *player) {    
     limpiarPantalla();
     Escenarios* actual = player->actual;
     char dir;
@@ -332,6 +332,7 @@ void avanzarEscenario(Jugador *player) {
                 player->actual = actual->dir_posibles.arriba;
             else
                 printf("NO HAY UN CAMINO HACIA ARRIBA.\n");
+                return 0;
             break;
         case 'S':
         case 's':
@@ -339,6 +340,7 @@ void avanzarEscenario(Jugador *player) {
                 player->actual = actual->dir_posibles.abajo;
             else
                 printf("NO HAY UN CAMINO HACI ABAJO.\n");
+                return 0;
             break;
         case 'A':
         case 'a':
@@ -346,6 +348,7 @@ void avanzarEscenario(Jugador *player) {
                 player->actual = actual->dir_posibles.izquierda;
             else
                 printf("NO HAY UN CAMINO HACIA LA IZQUIERDA.\n");
+                return 0;
             break;
         case 'D':
         case 'd':
@@ -353,17 +356,19 @@ void avanzarEscenario(Jugador *player) {
                 player->actual = actual->dir_posibles.derecha;
             else
                 printf("NO HAY UN CAMINO HACIA LA DERECHA.\n");
+                return 0;
             break;
         default:
             printf("DIRECCION NO VALIDA. USA SOLO W, A, S, D.\n");
-            return;
+            return 0;
     }
 
     printf("\nAVANZASTE AL ESCENARIO: %s\n", player->actual->nombre);
     printf("DESCRIPCION: %s\n", player->actual->descripcion);
     
-    float tiempo = (player->peso + 1) / 10.0;
+    int tiempo = (player->peso + 1 + 9) / 10;
     player->tRestante -= tiempo;
+    return 1;
 }
 
 void limpiar_juego(HashMap * juego){
@@ -386,7 +391,7 @@ void reiniciar_jugador(Jugador * player, HashMap * juego){
     list_clean(player->inventario);
     player->peso = 0;
     player->puntaje = 0;
-    player->tRestante = 10.0;
+    player->tRestante = 10;
 }
 
 void reiniciar_juego(Jugador * player, HashMap * juego){
@@ -432,7 +437,6 @@ void seleccionOpcion(Jugador *player, HashMap *juego) {
     limpiarPantalla();
     printf("\nFIN DEL JUEGO\n");
     printf("PUNTAJE DE %s: %d\n", player->nombre, player->puntaje);
-    printf("TIEMPO RESTANTE: %f", player->tRestante);
     if (strcmp(player->actual->nombre, "Salida") == 0) printf("FELICIDADES, LOGRASTE ESCAPAR\n");
     else printf("TE FALTO TIEMPO PARA PODER ESCAPAR\n");
     reiniciar_juego(player, juego);
@@ -445,12 +449,12 @@ void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego) {
     int turno = 0;
     int mov = 0;
     Jugador *jugadores[2] = {player1, player2};
-    while ((player1->tRestante > 0 && strcmp(player1->actual->nombre, "Salida") != 0) || 
-           (player2->tRestante > 0 && strcmp(player2->actual->nombre, "Salida") != 0)) {
+    while ((player1->tRestante > 0 && strcmp(player1->actual->esFinal, "Si") != 0) || 
+           (player2->tRestante > 0 && strcmp(player2->actual->esFinal, "Si") != 0)) {
 
         Jugador *actual = jugadores[turno];
 
-        if (actual->tRestante <= 0 || strcmp(actual->actual->nombre, "Salida") == 0) {
+        if (actual->tRestante <= 0 || strcmp(actual->actual->esFinal, "Si") == 0) {
             printf("\n%s ya no tiene tiempo restante o llego al final.\n", actual->nombre);
             turno = 1 - turno;
             mov = 0;
@@ -483,8 +487,7 @@ void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego) {
                 accion_exitosa = descartar_items(actual);
                 break;
             case '3':
-                avanzarEscenario(actual);
-                mov++;
+                accion_exitosa = avanzarEscenario(actual);
                 break;
             case '4':
                 turno = 1 - turno;
@@ -505,7 +508,7 @@ void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego) {
 
         if (accion_exitosa) mov++;
 
-        printf("\nTurno de %s (Tiempo restante: %.2f)\n", actual->nombre, actual->tRestante);
+        printf("\nTurno de %s (Tiempo restante: %d segundos)\n", actual->nombre, actual->tRestante);
         if (mov == max_mov) { 
             turno = 1 - turno;
             mov = 0;
@@ -513,24 +516,21 @@ void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego) {
         presioneTeclaParaContinuar();
     }
     printf("\nFIN DEL JUEGO\n");
-    printf("Puntaje de %s: %d\n", player1->nombre, player1->puntaje);
-    printf("TIEMPO RESTANTE: %f\n\n", player1->tRestante);
+    printf("\nPuntaje de %s: %d\n", player1->nombre, player1->puntaje);
     printf("Puntaje de %s: %d\n", player2->nombre, player2->puntaje);
-    printf("TIEMPO RESTANTE: %f\n", player1->tRestante);
-    if (strcmp(player1->actual->nombre, "Salida") == 0 && strcmp(player2->actual->nombre, "Salida") == 0){
-        if (player1->puntaje > player2->puntaje) printf("%s HA GANADO!\n", player1->nombre);
-        else if (player2->puntaje > player1->puntaje) printf("%s HA GANADO\n", player2->nombre);
+    if (strcmp(player1->actual->esFinal, "Si") == 0 && strcmp(player2->actual->esFinal, "Si") == 0){
+        if (player1->puntaje > player2->puntaje) printf("\n%s HA GANADO!\n", player1->nombre);
+        else if (player2->puntaje > player1->puntaje) printf("\n%s HA GANADO\n", player2->nombre);
         else printf("ES UN EMPATE\n");
     }
     else{
-        if (strcmp(player1->actual->nombre, "Salida") == 0) printf("%s HA GANADO\n", player1->nombre);
+        if (strcmp(player1->actual->nombre, "Salida") == 0) printf("\n%s HA GANADO\n", player1->nombre);
         else printf("%s TE FALTO TIEMPO PARA PODER ESCAPAR\n", player1->nombre);
 
-        if (strcmp(player2->actual->nombre, "Salida") == 0) printf("%s HA GANADO\n", player2->nombre);
+        if (strcmp(player2->actual->nombre, "Salida") == 0) printf("\n%s HA GANADO\n", player2->nombre);
         else printf("%s TE FALTO TIEMPO PARA PODER ESCAPAR\n", player2->nombre);
     }
     
-
     reiniciar_juego(player1, juego);
     reiniciar_juego(player2, juego);
     return;
@@ -544,7 +544,7 @@ Jugador * crear_jugador(char nombre[], HashMap * juego){
     player->inventario = list_create();
     player->peso = 0;
     player->puntaje = 0;
-    player->tRestante = 10.0;
+    player->tRestante = 10;
 
     return player;
 }
@@ -590,7 +590,6 @@ int main(){
                 p2 = crear_jugador(name, juego);
             }
             seleccionOpcionMJ(p1, p2, juego);
-
             break;
         case '3':
         puts("ABANDONANDO EL JUEGO");
