@@ -89,6 +89,7 @@ MENÚ DE OPCIONES:
 - "4) REINICIAR PARTIDA": Se vuelve al estado inicial de la partida.
 - "5) REGRESAR AL MENU PRINCIPAL": Se vuelveal menú principal.
 
+
 2) Jugar Multijugador: Al seleccionar esta opcion primero se pedira el nombre de usuario, luego se mostrara los datos del jugador y por último el menú de opciones para jugar
     
 OPCION SELECCIONADA:
@@ -147,6 +148,7 @@ MENÚ DE OPCIONES:
 - "4) SALTAR TURNO": Se termina el turno del jugador que esta jugando y se pasa al siguiente.
 - "5) REINICIAR PARTIDA": Se vuelve al estado inicial de la partida.
 - "6) REGRESAR AL MENU PRINCIPAL": Se vuelveal menú principal.
+
 
 3) Salir: Se finaliza el juego.
 
