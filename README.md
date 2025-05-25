@@ -1,14 +1,16 @@
-# Tarea_3
+# Tarea 3: GraphQuest
 
 ## Descripción de la Tarea
-Spotifind es un sistema de base de datos de canciones que permite buscar y explorar canciones. ya sea, por género, artistas o tempo. Las canciones son cargadas desde un archivo CSV y se organizan internamente a traves de hashmaps y listas para lograr ofrecer una búsqueda eficiente. Esto para poder permitir a losa usuarios encontrar fácilmente las canciones según lo que necesiten.
+GraphQuest es un juego de aventura implementado en lenguaje C, donde el jugador recorre un laberinto representado como un grafo. Cada nodo del grafo es un escenario único que puede contener ítems coleccionables con un valor en puntos y peso. El objetivo principal es tomar decisiones estratégicas para recolectar el mayor puntaje posible y llegar a la salida del laberinto antes que se acabe el tiempo. Este juego además cuenta con un modo en solitario o multijugador
 
 ## Funciones implementadas
-1. Carga de canciones desde un archivo CSV.
-2. Búsqueda de canciones por género.
-3. Búsqueda de canciones por artista.
-4. Búsqueda de canciones clasificada por tempo (lento, moderado, rápido).
-5. Liberación de memoria usada por las estructuras internas.
+1-. Carga de escenarios desde un archivo CSV: Se importan los nodos del grafo (escenarios) junto con sus conexiones, ítems y tiempos asociados.
+2-. Navegación entre escenarios: El jugador puede desplazarse entre escenarios conectados, gestionando el tiempo disponible.
+3-. Recolección y descarte de ítems: El jugador puede recoger ítems disponibles en un escenario y descartarlos desde su inventario.
+4-. Gestión de inventario del jugador: Se almacena información de los ítems recogidos, su valor y peso, permitiendo optimizar el puntaje.
+5-. Cálculo del puntaje total: Se calcula el puntaje del jugador en función de los ítems recolectados.
+6-. Control del tiempo restante: Se actualiza el tiempo disponible según las decisiones del jugador y los tiempos de transición entre escenarios.
+7-. Liberación de memoria: Al finalizar el juego, se libera correctamente toda la memoria utilizada por las estructuras dinámicas.
 
 ## Compilar el código 
 
@@ -38,48 +40,127 @@ gcc *.c -o main.exe
     * Ejemplo:  Si el artista en el CSV está como "Joseph Sullinger", buscar "joseph sullinger" no arrojará resultados.
 
 ## Estructura del código
-- main.c       # Programa principal
-- list.h       # Prototipos de lista enlazada
-- list.c       # Implementación de lista enlazada
-- hashmap.h    # Prototipos de mapas hash
-- hashmap.c    # Implementación de mapas hash
-- extra.h      # Prototipos de funciones auxiliares
 - extra.c      # Implementación de funbciones auxiliares
+- extra.h      # Prototipos de funciones auxiliares
+- hashmap.c    # Implementación de mapas hash
+- hashmap.h    # Prototipos de mapas hash
+- list.c       # Implementación de lista enlazada
+- list.h       # Prototipos de lista enlazada
+- main.c       # Programa principal
 - README.md    # Este archivo de texto
 
 
 ### Ejemplo de uso 
-1) Cargar Canciones
-   > Seleccionar opción: 1
-   > "Canciones cargadas con exito"
-   
-2) Buscar por género
-   > Seleccionar opción 2
-   > Ingrese género: Pop
-   > Se listan canciones del género solicitado.
+1) Jugar en solitario: Al seleccionar esta opcion primero se pedira el nombre de usuario, luego se mostrara los datos del jugador, al igual que después de cada turno y por último el menú de opciones para jugar
+    
+    OPCION SELECCIONADA:
+    > Ingrese su opcion: 1
+    
+    INGRESAR EL NOMBRE DE JUGADOR:
+    > NOMBRE DE JUGADOR: JOSUE
 
-3) Buscar por artista
-   > Seleccionar opción 3
-   > Ingrese nombre del artista: Dua Lipa
-   > Se listan canciones de ese artista.
+    DATOS DEL JUGADOR:
+    ```
+    JUGADOR: BRANDON
+    ESCENARIO: Entrada principal
+    DESCRIPCION: Una puerta rechinante abre paso a esta mansion olvidada por los dioses y los conserjes. El aire huele a humedad y a misterios sin resolver.
+    NO SE ENCONTRARON ITEMS EN ESTA SALA
+    TIEMPO RESTANTE: 10.00
+    EL INVENTARIO ESTA VACIO
+    PESO TOTAL: 0
+    PUNTAJE ACUMULADO: 0
+    DIRECCIONES POSIBLES: ABAJO 
+    ```
+    ```
+    JUGADOR: JOSUE
+    ESCENARIO: Entrada principal
+    DESCRIPCION: Una puerta rechinante abre paso a esta mansion olvidada por los dioses y los conserjes. El aire huele a humedad y a misterios sin resolver.
+    NO SE ENCONTRARON ITEMS EN ESTA SALA
+    TIEMPO RESTANTE: 10.00
+    EL INVENTARIO ESTA VACIO
+    PESO TOTAL: 0
+    PUNTAJE ACUMULADO: 0
+    DIRECCIONES POSIBLES: ABAJO 
+    ```
 
-4) Buscar por tempo
-   > Seleccionar opción 4
-   > Elegir entre:
+    MENÚ DE OPCIONES:
+    ```
+    ========================================
+        MMORPG NO LINEAL SOLITARIO       
+    ========================================
+    1) RECOGER ITEM(s)
+    2) DESCARTAR ITEM(s)
+    3) AVANZAR EN UNA DIRECCION
+    4) REINICIAR PARTIDA
+    5) REGRESAR AL MENU PRINCIPAL
+    ``` 
+- 1) RECOGER ITEM(s): Se recoge un item, si hay disponibles.
+- 2) DESCARTAR ITEM(s): Se deja un item del inventario en el escenario en el que se encuentra el jugador.
+- 3) AVANZAR EN UNA DIRECCION: Se avanza en una dirreción (ARRIBA - ABAJO - DERECHA - IZQUIERDA).
+- 4) REINICIAR PARTIDA: Se vuelve al estado inicial de la partida.
+- 5) REGRESAR AL MENU PRINCIPAL: Se vuelveal menú principal.
 
-   * 1. Lentas
-   * 2. Moderadas
-   * 3. Rápidas
+2) Jugar Multijugador: Al seleccionar esta opcion primero se pedira el nombre de usuario, luego se mostrara los datos del jugador y por último el menú de opciones para jugar
+    
+    OPCION SELECCIONADA:
+    > Ingrese su opcion: 2
+    
+    INGRESAR EL NOMBRE DE JUGADOR:
+    > NOMBRE DEL JUGADOR 1: BRANDON
+    > NOMBRE DEL JUGADOR 2: JOSUE
 
+    DATOS DEL JUGADOR:
+    ```
+    JUGADOR: JOSUE
+    ESCENARIO: Entrada principal
+    DESCRIPCION: Una puerta rechinante abre paso a esta mansion olvidada por los dioses y los conserjes. El aire huele a humedad y a misterios sin resolver.
+    NO SE ENCONTRARON ITEMS EN ESTA SALA
+    TIEMPO RESTANTE: 10.00
+    EL INVENTARIO ESTA VACIO
+    PESO TOTAL: 0
+    PUNTAJE ACUMULADO: 0
+    DIRECCIONES POSIBLES: ABAJO 
+    ```
+
+    MENÚ DE OPCIONES:
+    ```
+    ========================================
+          MMORPG NO LINEAL MULTIJUGADOR       
+    ========================================
+    1) RECOGER ITEM(s)
+    2) DESCARTAR ITEM(s)
+    3) AVANZAR EN UNA DIRECCION
+    4) SALTAR TURNO
+    5) REINICIAR PARTIDA
+    6) REGRESAR AL MENU PRINCIPAL
+    ``` 
+- 1) RECOGER ITEM(s): Se recoge un item, si hay disponibles.
+- 2) DESCARTAR ITEM(s): Se deja un item del inventario en el escenario en el que se encuentra el jugador.
+- 3) AVANZAR EN UNA DIRECCION: Se avanza en una dirreción (ARRIBA - ABAJO - DERECHA - IZQUIERDA).
+- 4) SALTAR TURNO: Se termina el turno del jugador que esta jugando y se pasa al siguiente.
+- 5) REINICIAR PARTIDA: Se vuelve al estado inicial de la partida.
+- 6) REGRESAR AL MENU PRINCIPAL: Se vuelveal menú principal.
+
+3) Salir: Se finaliza el juego.
+
+    OPCION SELECCIONADA:
+    > Ingrese su opcion: 3
 
 ## Contribuciones
 
 ### [Brandon Cáceres]
 - Implementación de lectura CSV y separación de datos.
 - Desarrollo de las estructuras de datos: listas y mapas hash.
-- Clasificación de canciones por tempo.
-- Funcionalidades de búsqueda y visualización.
+- Implementación de la mecánica de recolección y descarte de ítems en los escenarios.
 - Manejo de memoria y liberación estructurada.
+- Revisión de errores en el código (validación, lógica y funcionamiento general)
+
+### [Josué Huaiquil]
+- Implementación del menú principal y flujo del programa (main.c).
+- Implementación de la selección de opciones en los modos Solo y Multijugador.
+- Implementación del sistema de avance entre escenarios.
+- Diseño de la interfaz estética del juego en consola.
+- Redacción del README.md
 
 ## Aspectos a Mejorar
 1. Validar formato del CSV al cargar canciones.
@@ -87,168 +168,4 @@ gcc *.c -o main.exe
 3. Implementar guardado de playlists personalizadas.
 4. Crear menú de ayuda para usuarios nuevos.
 
-
-# Fin
-
-
-
-# SPOTIFIND
-
-## Descripción
-
-Spotifind permite cargar una base de datos de canciones y buscarlas rápida y eficientemente, ya sea por denero, artista o tempo. 
-
-## Cómo compilar y ejecutar
-
-Este sistema ha sido desarrollado en lenguaje C y puede ejecutarse fácilmente utilizando **Visual Studio Code** junto con una extensión para C/C++, como **C/C++ Extension Pack** de Microsoft. Para comenzar a trabajar con el sistema en tu equipo local, sigue estos pasos:
-
-### Requisitos previos:
-
-- Tener instalado [Visual Studio Code](https://code.visualstudio.com/).
-- Instalar la extensión **C/C++** (Microsoft).
-- Tener instalado un compilador de C (como **gcc**). Si estás en Windows, se recomienda instalar [MinGW](https://www.mingw-w64.org/) o utilizar el entorno [WSL](https://learn.microsoft.com/en-us/windows/wsl/).
-
-### Pasos para compilar y ejecutar:
-
-1. **Descarga y descomprime el** archivo `.zip` en una carpeta de tu elección o **clona el repositorio de Git Hub**.
-2. **Abre el proyecto en Visual Studio Code**
-    - Inicia Visual Studio Code.
-    - FORMA 1: Selecciona `Archivo > Abrir carpeta...` y elige la carpeta donde descomprimiste el proyecto.
-    - FORMA 2: Selecciona clonar repositorio usando el siguiente link: https://github.com/Joelhu06/tarea2_JosueHuaiquil.git
-3. **Compila el código**
-    - Abre el archivo principal (por ejemplo, `main.c`).
-    - Abre la terminal integrada (`Terminal > Nueva terminal`).
-    - En la terminal, compila el programa con el siguiente comando (ajusta el nombre si el archivo principal tiene otro nombre):
-        
-        ```bash
-        gcc main.c tdas/*.c -o test
-        ```
-        
-4. **Ejecuta el programa**
-    - Una vez compilado, puedes ejecutar la aplicación con:
-        
-        ```
-        ./test
-        ```
-        
-
-## Funcionalidades
-
-### Funcionando correctamente:
-
-- Cargar las canciones en sus distintas categorias (Genero, Artista, Tempo) 
-- Mostrar un menu interactivo amigable.
-- Buscar las canciones según las distintas categorias y mostrarlas por pantalla.
-- Finalizar el programa.
-
-### Problemas conocidos:
-
-- El primer dato no se muestra correctamente.
-
-## Ejemplo de uso
-
-Para el uso del programa existen varias opciones para selecionar, las cuales se muestran en el siguiente menú:
-
-```
-========================================
-       BASE DE DATOS DE CANCIONES
-========================================
-1) CARGAR CANCIONES
-2) BUSCAR POR GENERO
-3) BUSCAR POR ARTISTA
-4) BUSCAR POR TEMPO
-5) SALIR
-========================================
-INGRESE SU OPCION: 
-```
-
-**Opción 1: Cargar canciones**
-
-Se comienza cargando los datos de las canciones.
-
-```
-INGRESE SU OPCION: 1) CARGAR CANCIONES
-```
-
-Se cargan las canciones y se registran por generos, artistas y tempo.
-
-**Opción 2: Buscar por genero**
-
-Se buscan las canciones por genero, al selecionar un genero se escribe en la consola y luego de una busqueda se imprimen en la pantalla.
-
-Ejemplo:
-```
-Opción seleccionada: 2) BUSCAR POR GENERO
-=======================================
-          BUSQUEDA POR GENERO
-=======================================
-INGRESE EL GENERO DE LA CANCION: acoustic
-```
-
-Dentro de las canciones cargadas se buscan todas las que tengan un genero especifico, en el caso del ejemplo se buscan todas aquellas que sean de genero acoustic, y luego en la consola se muestran todas las canciones que sean del mismo genero.
-
-Ejemplo de salida en la consola:
-```
-CANCION: Waves of Panic
-ALBUM: The Shreds
-TEMPO: 166
-ARTISTAS: Corporate Hearts
-------------------------
-```
-
-**Opción 3: Buscar por artista**
-
-Se buscan las canciones por artista, al selecionar un artista se escribe en la consola el nombre del artista y luego de una busqueda se muestra en la consola las canciones en las que participo ese artista.
-
-Ejemplo:
-```
-Opción seleccionada: 3) BUSCAR POR ARTISTA
-========================================
-          BUSQUEDA POR ARTISTA
-========================================
-INGRESE EL NOMBRE DEL ARTISTA: SA
-```
-
-Dentro de las canciones cargadas se buscan todas las que tengan al artista buscado, en el caso del ejemplo se buscan todas las canciones en las que el artista "SA" haya participado, y luego en la consola se muestran todas sus canciones.
-
-Ejemplo de salida en la consola:
-```
-CANCION: Oora
-ALBUM: Oora
-TEMPO: 140
-ARTISTA BUSCADO: SA
-------------------------
-```
-
-**Opción 4: Buscar por tempo**
-
-Se busca una canción según su tempo, ya sean "Lentas", "Moderadas" o "Rapidas", se escribre en la consola el tempo deseado, y luego de una busqueda se muestran en la consola todas las canciones que tengan el tempo buscado.
-
-Ejemplo:
-```
-Opción seleccionada: 4) BUSCAR POR TEMPO
-========================================
-           BUSQUEDA POR TEMPO
-========================================
-INGRESE EL TEMPO DE LA CANCION (Lentas, Moderadas, Rapidas): Lentas
-```
-
-Dentro de las canciones cargadas se buscan todas las que tengan el tempo buscado, en el caso del ejemplo se buscan todas las canciones en las que el tempo sea lento ("Lentas"), y luego en la consola se muestran todas las canciones en el que el tempo sea lento.
-
-Ejemplo de salida en la consola:
-```
-CANCION: Jesus Lover of My Soul - Live
-ALBUM: Shout to the Lord (Live)
-TEMPO: 72
-ARTISTAS: Hillsong Worship, Integrity's Hosanna! Music, Darlene Zschech
-------------------------
-```
-
-**Opción 5: Salir**
-
-Al seleccionar la opción 5 se finaliza la ejecución del programa.
-
-Ejemplo:
-```
-Opción seleccionada: 5) SALIR
-```
+# Fin :)
