@@ -70,7 +70,8 @@ PUNTAJE ACUMULADO: 0
 DIRECCIONES POSIBLES: ABAJO 
 ```
 
-    MENÚ DE OPCIONES:
+MENÚ DE OPCIONES:
+
 ```bash
 ========================================
     MMORPG NO LINEAL SOLITARIO       
