@@ -90,7 +90,8 @@ void mostrarMenu(char *texto) {
     }
 }
 
-/**/
+/*Funcion para leer los escenarios desde un archivo CSV y cargarlos en un HashMap
+llamado juego que almacenara los escenarios usando su ID como clave*/
 void leer_escenarios(HashMap * juego){
     FILE *archivo = fopen("data/graphquest.csv", "r");
     if (archivo == NULL){
@@ -103,11 +104,13 @@ void leer_escenarios(HashMap * juego){
 
     while ((campos = leer_linea_csv(archivo, ',')) != NULL){
         Escenarios * escenario = (Escenarios*)malloc(sizeof(Escenarios));
+        //Inicializa los punteros de direccion a NULL para evitar punteros basura
         escenario->dir_posibles.arriba = NULL;
         escenario->dir_posibles.abajo = NULL;
         escenario->dir_posibles.izquierda = NULL;
         escenario->dir_posibles.derecha = NULL;
-
+        
+        //Copia los datos del CSV a la estructura del escenario
         strncpy(escenario->id, campos[0], sizeof(escenario->id));
         strncpy(escenario->nombre, campos[1], sizeof(escenario->nombre));
         strncpy(escenario->descripcion, campos[2], sizeof(escenario->descripcion));
@@ -143,6 +146,7 @@ void leer_escenarios(HashMap * juego){
     }
     fclose(archivo);
 
+    // Segunda pasada: establecer los punteros de dirección entre escenarios
     List * claves = list_create();
     Pair * par = firstMap(juego);
     while (par != NULL) {
