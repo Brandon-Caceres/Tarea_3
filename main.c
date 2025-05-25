@@ -57,9 +57,9 @@ void mostrarMenuPrincipal() {
     puts("            MMORPG NO LINEAL          ");
     puts("========================================");
   
-    puts("1) Jugar en solitario");
-    puts("2) Jugar Multijugador");
-    puts("3) Salir");
+    puts("1) JUGAR EN SOLITARIO");
+    puts("2) JUGAR MULTIJUGADOR");
+    puts("3) SALIR");
 }
 
 void mostrarMenu(char *texto) {
@@ -85,7 +85,6 @@ void mostrarMenu(char *texto) {
     }
 }
     
-
 void leer_escenarios(HashMap * juego){
     FILE *archivo = fopen("data/graphquest.csv", "r");
     if (archivo == NULL){
@@ -182,7 +181,7 @@ void mostrar_escenario(Jugador * player){
     if (player->actual->items_disp != NULL && list_first(player->actual->items_disp) != NULL) {
         printf("ITEMS DISPONIBLES (nombre,peso,valor): \n");
         for (Item * item = list_first(player->actual->items_disp); item != NULL; item = list_next(player->actual->items_disp)){
-            printf("  - %s, %dkg, valor %d\n", item->nombre, item->peso, item->valor);
+            printf("  - %s, %dKg, %dpts\n", item->nombre, item->peso, item->valor);
         }
     }
     else printf("NO SE ENCONTRARON ITEMS EN ESTA SALA\n");
@@ -209,35 +208,35 @@ void mostrar_escenario(Jugador * player){
         if (player->actual->dir_posibles.derecha != NULL) printf("DERECHA ");
         printf("\n");
     }
-    else puts("Felicidades lograste salir del laberinto con un buen botin!!!");
+    else puts("FELICIDADES LOGRASTE SALIR DEL LABERINTO!!!");
 }
 
 int recoger_items(Jugador * player){
     limpiarPantalla();
     if (player->actual->items_disp == NULL || list_first(player->actual->items_disp) == NULL){
-        puts("No hay items disponibles en este escenario :(");
+        puts("NO HAY ITEMES DISPONIBLES EN ESTE ESCENARIO :(");
         return 0;
     }
 
     while (1){
         limpiarPantalla();
-        puts("Items disponibles para recoger");
+        puts("ITEMS DISPONIBLES PARA RECOGER");
         int i = 1;
         Item * arreglo_items[100];
 
         for (Item * item = list_first(player->actual->items_disp); item != NULL; item = list_next(player->actual->items_disp)){
-            printf("%d) %s, Peso: %dkg, Valor: $%d\n", i, item->nombre, item->peso, item->valor);
+            printf("%d) %s, PESO: %dKg, VALOR: %dpts\n", i, item->nombre, item->peso, item->valor);
             arreglo_items[i - 1] = item;
             i++;
         }
-        printf("%d) Cancelar\n", i);
+        printf("%d) CANCELAR\n", i);
 
         int opcion;
-        printf("Elige el numero del item a recoger: ");
+        printf("ELIGE EL NUMERO DEL ITEM A RECOGER: ");
         scanf(" %d", &opcion);
 
         if (opcion <= 0 || opcion >= i){
-            puts("Cancelando u opcion invalida");
+            puts("CANCELANDO U OPCION INVALIDA");
             presioneTeclaParaContinuar();
             return 0;
         }
@@ -254,7 +253,7 @@ int recoger_items(Jugador * player){
             }
         }
 
-        printf("Recogiste: %s\n", seleccionado->nombre);
+        printf("RECOGISTE: %s\n", seleccionado->nombre);
 
         player->tRestante -= 1;
         return 1;
@@ -264,29 +263,29 @@ int recoger_items(Jugador * player){
 int descartar_items(Jugador *player){
     limpiarPantalla();
     if (player->inventario == NULL || list_first(player->inventario) == NULL){
-        puts("No existen items en el inventario");
+        puts("NO EXISTEN ITEMS EN EL INVENTARIO");
         return 0;
     }
 
     while (1){
         limpiarPantalla();
-        puts("Items del inventario:");
+        puts("ITEMS DEL INVENTARIO:");
         int i = 1;
         Item * arreglo_items[100];
 
         for (Item * item = list_first(player->inventario); item != NULL; item = list_next(player->inventario)){
-            printf("%d) %s, Peso: %dkg, Valor: $%d\n", i, item->nombre, item->peso, item->valor);
+            printf("%d) %s, PESO: %dKg, VALOR: %dpts\n", i, item->nombre, item->peso, item->valor);
             arreglo_items[i - 1] = item;
             i++;
         }
-        printf("%d) Cancelar\n", i);
+        printf("%d) CANCELAR\n", i);
 
         int opcion;
         printf("ELIGE EL NUMERO DE ITEM A DESCARTAR: ");
         scanf(" %d", &opcion);
 
         if (opcion <= 0 || opcion >= i){
-            puts("Cancelando u opcion invalida");
+            puts("CANCELANDO U OPCION INVALIDA");
             presioneTeclaParaContinuar();
             return 0;
         }
@@ -303,7 +302,7 @@ int descartar_items(Jugador *player){
             }
         }
 
-        printf("Descartaste: %s\n", seleccionado->nombre);
+        printf("DESCARTASTE: %s\n", seleccionado->nombre);
 
         player->tRestante -= 1;
         return 1;
@@ -356,12 +355,12 @@ void avanzarEscenario(Jugador *player) {
                 printf("NO HAY UN CAMINO HACIA LA DERECHA.\n");
             break;
         default:
-            printf("Direccion no valida. Usa solo W, A, S o D.\n");
+            printf("DIRECCION NO VALIDA. USA SOLO W, A, S, D.\n");
             return;
     }
 
-    printf("\nAvanzaste al escenario: %s\n", player->actual->nombre);
-    printf("Descripcion: %s\n", player->actual->descripcion);
+    printf("\nAVANZASTE AL ESCENARIO: %s\n", player->actual->nombre);
+    printf("DESCRIPCION: %s\n", player->actual->descripcion);
     
     float tiempo = (player->peso + 1) / 10.0;
     player->tRestante -= tiempo;
@@ -432,7 +431,7 @@ void seleccionOpcion(Jugador *player, HashMap *juego) {
     }   
     limpiarPantalla();
     printf("\nFIN DEL JUEGO\n");
-    printf("Puntaje de %s: %d\n", player->nombre, player->puntaje);
+    printf("PUNTAJE DE %s: %d\n", player->nombre, player->puntaje);
     printf("TIEMPO RESTANTE: %f", player->tRestante);
     if (strcmp(player->actual->nombre, "Salida") == 0) printf("FELICIDADES, LOGRASTE ESCAPAR\n");
     else printf("TE FALTO TIEMPO PARA PODER ESCAPAR\n");
