@@ -126,7 +126,7 @@ DATOS DEL JUGADOR:
     
 
 MENÚ DE OPCIONES:
-    ```bash
+```bash
     ========================================
           MMORPG NO LINEAL MULTIJUGADOR       
     ========================================
@@ -136,7 +136,7 @@ MENÚ DE OPCIONES:
     4) SALTAR TURNO
     5) REINICIAR PARTIDA
     6) REGRESAR AL MENU PRINCIPAL
-    ```
+```
     
 
 - "1) RECOGER ITEM(s)": Se recoge un item, si hay disponibles.
