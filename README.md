@@ -57,7 +57,7 @@ gcc *.c -o main.exe
     INGRESAR EL NOMBRE DE JUGADOR:
     > NOMBRE DE JUGADOR: JOSUE
 
-    DATOS DEL JUGADOR:
+DATOS DEL JUGADOR:
 ```bash
 JUGADOR: JOSUE
 ESCENARIO: Entrada principal
