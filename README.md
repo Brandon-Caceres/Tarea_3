@@ -112,8 +112,8 @@ DATOS DEL JUGADOR:
     PESO TOTAL: 0
     PUNTAJE ACUMULADO: 0
     DIRECCIONES POSIBLES: ABAJO 
-    ```
-    ```
+    
+    
     JUGADOR: JOSUE
     ESCENARIO: Entrada principal
     DESCRIPCION: Una puerta rechinante abre paso a esta mansion olvidada por los dioses y los conserjes. El aire huele a humedad y a misterios sin resolver.
