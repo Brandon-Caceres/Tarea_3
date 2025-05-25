@@ -58,29 +58,29 @@ gcc *.c -o main.exe
     > NOMBRE DE JUGADOR: JOSUE
 
     DATOS DEL JUGADOR:
-    ```
-    JUGADOR: JOSUE
-    ESCENARIO: Entrada principal
-    DESCRIPCION: Una puerta rechinante abre paso a esta mansion olvidada por los dioses y los conserjes. El aire huele a humedad y a misterios sin resolver.
-    NO SE ENCONTRARON ITEMS EN ESTA SALA
-    TIEMPO RESTANTE: 10.00
-    EL INVENTARIO ESTA VACIO
-    PESO TOTAL: 0
-    PUNTAJE ACUMULADO: 0
-    DIRECCIONES POSIBLES: ABAJO 
-    ```
+```bash
+JUGADOR: JOSUE
+ESCENARIO: Entrada principal
+DESCRIPCION: Una puerta rechinante abre paso a esta mansion olvidada por los dioses y los conserjes. El aire huele a humedad y a misterios sin resolver.
+NO SE ENCONTRARON ITEMS EN ESTA SALA
+TIEMPO RESTANTE: 10.00
+EL INVENTARIO ESTA VACIO
+PESO TOTAL: 0
+PUNTAJE ACUMULADO: 0
+DIRECCIONES POSIBLES: ABAJO 
+```
 
     MENÚ DE OPCIONES:
-    ```
-    ========================================
-        MMORPG NO LINEAL SOLITARIO       
-    ========================================
-    1) RECOGER ITEM(s)
-    2) DESCARTAR ITEM(s)
-    3) AVANZAR EN UNA DIRECCION
-    4) REINICIAR PARTIDA
-    5) REGRESAR AL MENU PRINCIPAL
-    ``` 
+```bash
+========================================
+    MMORPG NO LINEAL SOLITARIO       
+========================================
+1) RECOGER ITEM(s)
+2) DESCARTAR ITEM(s)
+3) AVANZAR EN UNA DIRECCION
+4) REINICIAR PARTIDA
+5) REGRESAR AL MENU PRINCIPAL
+``` 
 
 - "1) RECOGER ITEM(s)": Se recoge un item, si hay disponibles.
 - "2) DESCARTAR ITEM(s)": Se deja un item del inventario en el escenario en el que se encuentra el jugador.
@@ -91,51 +91,52 @@ gcc *.c -o main.exe
 2) Jugar Multijugador: Al seleccionar esta opcion primero se pedira el nombre de usuario, luego se mostrara los datos del jugador y por último el menú de opciones para jugar
     
 OPCION SELECCIONADA:
-    ```
-    Ingrese su opcion: 2
+```bash
+Ingrese su opcion: 2
+```
+```bash
+INGRESAR EL NOMBRE DE JUGADOR:
     
-
-    INGRESAR EL NOMBRE DE JUGADOR:
-    
-    NOMBRE DEL JUGADOR 1: BRANDON
-    NOMBRE DEL JUGADOR 2: JOSUE
+NOMBRE DEL JUGADOR 1: BRANDON
+NOMBRE DEL JUGADOR 2: JOSUE
+```
     
 
 DATOS DEL JUGADOR:
-    ```
-    JUGADOR: BRANDON
-    ESCENARIO: Entrada principal
-    DESCRIPCION: Una puerta rechinante abre paso a esta mansion olvidada por los dioses y los conserjes. El aire huele a humedad y a misterios sin resolver.
-    NO SE ENCONTRARON ITEMS EN ESTA SALA
-    TIEMPO RESTANTE: 10.00
-    EL INVENTARIO ESTA VACIO
-    PESO TOTAL: 0
-    PUNTAJE ACUMULADO: 0
-    DIRECCIONES POSIBLES: ABAJO 
-    
-    
-    JUGADOR: JOSUE
-    ESCENARIO: Entrada principal
-    DESCRIPCION: Una puerta rechinante abre paso a esta mansion olvidada por los dioses y los conserjes. El aire huele a humedad y a misterios sin resolver.
-    NO SE ENCONTRARON ITEMS EN ESTA SALA
-    TIEMPO RESTANTE: 10.00
-    EL INVENTARIO ESTA VACIO
-    PESO TOTAL: 0
-    PUNTAJE ACUMULADO: 0
-    DIRECCIONES POSIBLES: ABAJO 
-    
+```bash
+JUGADOR: BRANDON
+ESCENARIO: Entrada principal
+DESCRIPCION: Una puerta rechinante abre paso a esta mansion olvidada por los dioses y los conserjes. El aire huele a humedad y a misterios sin resolver.
+NO SE ENCONTRARON ITEMS EN ESTA SALA
+TIEMPO RESTANTE: 10.00
+EL INVENTARIO ESTA VACIO
+PESO TOTAL: 0
+PUNTAJE ACUMULADO: 0
+DIRECCIONES POSIBLES: ABAJO 
+```
+```bash
+JUGADOR: JOSUE
+ESCENARIO: Entrada principal
+DESCRIPCION: Una puerta rechinante abre paso a esta mansion olvidada por los dioses y los conserjes. El aire huele a humedad y a misterios sin resolver.
+NO SE ENCONTRARON ITEMS EN ESTA SALA
+TIEMPO RESTANTE: 10.00
+EL INVENTARIO ESTA VACIO
+PESO TOTAL: 0
+PUNTAJE ACUMULADO: 0
+DIRECCIONES POSIBLES: ABAJO 
+```
 
 MENÚ DE OPCIONES:
 ```bash
-    ========================================
-          MMORPG NO LINEAL MULTIJUGADOR       
-    ========================================
-    1) RECOGER ITEM(s)
-    2) DESCARTAR ITEM(s)
-    3) AVANZAR EN UNA DIRECCION
-    4) SALTAR TURNO
-    5) REINICIAR PARTIDA
-    6) REGRESAR AL MENU PRINCIPAL
+========================================
+      MMORPG NO LINEAL MULTIJUGADOR       
+========================================
+1) RECOGER ITEM(s)
+2) DESCARTAR ITEM(s)
+3) AVANZAR EN UNA DIRECCION
+4) SALTAR TURNO
+5) REINICIAR PARTIDA
+6) REGRESAR AL MENU PRINCIPAL
 ```
     
 
