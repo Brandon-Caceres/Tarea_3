@@ -14,7 +14,7 @@ typedef struct{
     int valor;
 }Item;
 
-//Estructura para las direcciones podibles
+//Estructura para las direcciones posibles
 typedef struct{
     Escenarios * arriba;
     Escenarios * abajo;
@@ -36,6 +36,7 @@ struct Escenarios{
     char id_derecha[3];
 };
 
+//Estructura para cada jugador
 typedef struct{
     char nombre[50];
     Escenarios *actual;
@@ -45,9 +46,9 @@ typedef struct{
     int tRestante;
 }Jugador;
 
+//Funcion encargada de mostrar el menu principal
 void mostrarMenuPrincipal() {
     limpiarPantalla();
-    //encontre el meme jajaja
     /*albion online es un mmorpg no lineal en el que escribes 
     tu propia historia sin limitarte a seguir un camino prefijado, 
     explora un amplio mundo abierto con cinco biomas unicos, todo 
@@ -62,9 +63,12 @@ void mostrarMenuPrincipal() {
     puts("3) SALIR");
 }
 
+/*Funcion encargada de mostrar el menu del juego, adaptandose a 
+si se juega en solitario o si se decide jugar en multijugador*/
 void mostrarMenu(char *texto) {
     limpiarPantalla();
     puts("========================================");
+    //Muestra un titulo diferente basado en si el modo de juego es "solitario" o multijugador
     if (strcmp(texto, "SOLO") == 0) puts("       MMORPG NO LINEAL SOLITARIO       ");
     if (strcmp(texto, "MJ") == 0)   puts("      MMORPG NO LINEAL MULTIJUGADOR       ");
     puts("========================================");
@@ -77,6 +81,7 @@ void mostrarMenu(char *texto) {
         puts("4) REINICIAR PARTIDA");
         puts("5) REGRESAR AL MENU PRINCIPAL");
     }
+    //Muestra opciones adicionales para el modo multijugador
     if (strcmp(texto, "MJ") == 0)
     {
         puts("4) SALTAR TURNO");
@@ -84,7 +89,8 @@ void mostrarMenu(char *texto) {
         puts("6) REGRESAR AL MENU PRINCIPAL");
     }
 }
-    
+
+/**/
 void leer_escenarios(HashMap * juego){
     FILE *archivo = fopen("data/graphquest.csv", "r");
     if (archivo == NULL){
@@ -330,33 +336,37 @@ int avanzarEscenario(Jugador *player) {
         case 'w':
             if (actual->dir_posibles.arriba)
                 player->actual = actual->dir_posibles.arriba;
-            else
+            else{
                 printf("NO HAY UN CAMINO HACIA ARRIBA.\n");
                 return 0;
+            }
             break;
         case 'S':
         case 's':
             if (actual->dir_posibles.abajo)
                 player->actual = actual->dir_posibles.abajo;
-            else
+            else{
                 printf("NO HAY UN CAMINO HACI ABAJO.\n");
                 return 0;
+            }
             break;
         case 'A':
         case 'a':
             if (actual->dir_posibles.izquierda)
                 player->actual = actual->dir_posibles.izquierda;
-            else
+            else{
                 printf("NO HAY UN CAMINO HACIA LA IZQUIERDA.\n");
                 return 0;
+            }
             break;
         case 'D':
         case 'd':
             if (actual->dir_posibles.derecha)
                 player->actual = actual->dir_posibles.derecha;
-            else
+            else{
                 printf("NO HAY UN CAMINO HACIA LA DERECHA.\n");
                 return 0;
+            }
             break;
         default:
             printf("DIRECCION NO VALIDA. USA SOLO W, A, S, D.\n");
@@ -375,8 +385,13 @@ void limpiar_juego(HashMap * juego){
     Pair * par = firstMap(juego);
     while (par != NULL){
         Escenarios * escenario = (Escenarios*)par->value;
-        if (escenario->items_disp != NULL) list_clean(escenario->items_disp);
-        free(escenario->items_disp);
+        if (escenario->items_disp != NULL) {
+            for (Item * item = list_first(escenario->items_disp); item != NULL; item = list_next(escenario->items_disp)) {
+                free(item);
+            }
+            list_clean(escenario->items_disp);
+            free(escenario->items_disp);
+        }
         free(escenario);
         par = nextMap(juego);
     }
@@ -389,6 +404,7 @@ void reiniciar_jugador(Jugador * player, HashMap * juego){
         free(item);
     }
     list_clean(player->inventario);
+    free(player->inventario);
     player->peso = 0;
     player->puntaje = 0;
     player->tRestante = 10;
@@ -549,6 +565,15 @@ Jugador * crear_jugador(char nombre[], HashMap * juego){
     return player;
 }
 
+void liberar_jugador(Jugador *player) {
+    for (Item *item = list_first(player->inventario); item != NULL; item = list_next(player->inventario)) {
+        free(item);
+    }
+    list_clean(player->inventario);
+    free(player->inventario);
+    free(player);
+}
+
 int main(){
     
     char opcion;
@@ -600,5 +625,9 @@ int main(){
         }
         presioneTeclaParaContinuar();
     }while(opcion != '3');
+    limpiar_juego(juego);
+    liberar_jugador(p);
+    liberar_jugador(p1);
+    liberar_jugador(p2);
     return 0;
 }
