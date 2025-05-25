@@ -310,7 +310,7 @@ int descartar_items(Jugador *player){
     }
 }
 
-void avanzarEscenario(Jugador *player) {
+void avanzarEscenario(Jugador *player) {    
     limpiarPantalla();
     Escenarios* actual = player->actual;
     char dir;
@@ -398,8 +398,9 @@ void reiniciar_juego(Jugador * player, HashMap * juego){
 
 void seleccionOpcion(Jugador *player, HashMap *juego) {
     char op;
-
-    do {
+    
+    while ((player->tRestante > 0 && strcmp(player->actual->nombre, "Salida") != 0))
+    {
         limpiarPantalla();
         mostrar_escenario(player);
         presioneTeclaParaContinuar();
@@ -428,7 +429,15 @@ void seleccionOpcion(Jugador *player, HashMap *juego) {
                 break;
         }
         presioneTeclaParaContinuar();
-    } while (op != '5');
+    }   
+    limpiarPantalla();
+    printf("\nFIN DEL JUEGO\n");
+    printf("Puntaje de %s: %d\n", player->nombre, player->puntaje);
+    printf("TIEMPO RESTANTE: ");
+    if (strcmp(player->actual->nombre, "Salida") == 0) printf("FELICIDADES, LOGRASTE ESCAPAR\n");
+    else printf("TE FALTO TIEMPO PARA PODER ESCAPAR\n");
+    reiniciar_juego(player, juego);
+    return;
 }
 
 void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego) {
@@ -455,6 +464,7 @@ void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego) {
         limpiarPantalla();
         mostrar_escenario(actual);
         presioneTeclaParaContinuar();
+
         mostrarMenu("MJ");
 
         printf("Ingrese su opcion (%s): ", actual->nombre);
@@ -462,6 +472,7 @@ void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego) {
         
         if (op != '1' && op != '2' && op != '3' && op != '4' && op != '5' && op != '6') {
             printf("OPCION NO VALIDA. Intente de nuevo.\n");
+            presioneTeclaParaContinuar();
             continue;
         }
 
@@ -482,12 +493,15 @@ void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego) {
                 break;
             case '5':
                 reiniciar_juego(player1, juego);
-                reiniciar_jugador(player2, juego);
+                reiniciar_juego(player2, juego);
                 break;
             case '6':
                 reiniciar_juego(player1, juego);
-                reiniciar_jugador(player2, juego);
+                reiniciar_juego(player2, juego);
                 return;
+            default:
+                printf("OPCION NO VALIDA.\n");
+                break;
         }
 
         if (accion_exitosa) mov++;
@@ -499,6 +513,26 @@ void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego) {
         }
         presioneTeclaParaContinuar();
     }
+    printf("\nFIN DEL JUEGO\n");
+    printf("Puntaje de %s: %d\n", player1->nombre, player1->puntaje);
+    printf("Puntaje de %s: %d\n", player2->nombre, player2->puntaje);
+    if (strcmp(player1->actual->nombre, "Salida") == 0 && strcmp(player2->actual->nombre, "Salida") == 0){
+        if (player1->puntaje > player2->puntaje) printf("%s HA GANADO!\n", player1->nombre);
+        else if (player2->puntaje > player1->puntaje) printf("%s HA GANADO\n", player2->nombre);
+        else printf("ES UN EMPATE\n");
+    }
+    else{
+        if (strcmp(player1->actual->nombre, "Salida") == 0) printf("%s HA GANADO\n", player1->nombre);
+        else printf("%s TE FALTO TIEMPO PARA PODER ESCAPAR\n", player1->nombre);
+
+        if (strcmp(player2->actual->nombre, "Salida") == 0) printf("%s HA GANADO\n", player2->nombre);
+        else printf("%s TE FALTO TIEMPO PARA PODER ESCAPAR\n", player2->nombre);
+    }
+    
+
+    reiniciar_juego(player1, juego);
+    reiniciar_juego(player2, juego);
+    return;
 }
 
 Jugador * crear_jugador(char nombre[], HashMap * juego){
@@ -531,6 +565,7 @@ int main(){
         switch (opcion)
         {
         case '1':
+            p = NULL;
             if (p == NULL){
                 printf("NOMBRE DE JUGADOR: ");
                 scanf(" %49s", name);
@@ -540,6 +575,8 @@ int main(){
             seleccionOpcion(p, juego);
             break;
         case '2':
+            p1 = NULL;
+            p2 = NULL;
             if (p1 == NULL) {
                 printf("NOMBRE DEL JUGADOR 1: ");
                 scanf(" %49s", name);
@@ -551,8 +588,8 @@ int main(){
                 scanf(" %49s", name);
                 p2 = crear_jugador(name, juego);
             }
-            int turno = 0;
             seleccionOpcionMJ(p1, p2, juego);
+
             break;
         case '3':
         puts("ABANDONANDO EL JUEGO");
