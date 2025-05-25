@@ -4,13 +4,13 @@
 GraphQuest es un juego de aventura implementado en lenguaje C, donde el jugador recorre un laberinto representado como un grafo. Cada nodo del grafo es un escenario único que puede contener ítems coleccionables con un valor en puntos y peso. El objetivo principal es tomar decisiones estratégicas para recolectar el mayor puntaje posible y llegar a la salida del laberinto antes que se acabe el tiempo. Este juego además cuenta con un modo en solitario o multijugador
 
 ## Funciones implementadas
-1-. Carga de escenarios desde un archivo CSV: Se importan los nodos del grafo (escenarios) junto con sus conexiones, ítems y tiempos asociados.
-2-. Navegación entre escenarios: El jugador puede desplazarse entre escenarios conectados, gestionando el tiempo disponible.
-3-. Recolección y descarte de ítems: El jugador puede recoger ítems disponibles en un escenario y descartarlos desde su inventario.
-4-. Gestión de inventario del jugador: Se almacena información de los ítems recogidos, su valor y peso, permitiendo optimizar el puntaje.
-5-. Cálculo del puntaje total: Se calcula el puntaje del jugador en función de los ítems recolectados.
-6-. Control del tiempo restante: Se actualiza el tiempo disponible según las decisiones del jugador y los tiempos de transición entre escenarios.
-7-. Liberación de memoria: Al finalizar el juego, se libera correctamente toda la memoria utilizada por las estructuras dinámicas.
+1. Carga de escenarios desde un archivo CSV: Se importan los nodos del grafo (escenarios) junto con sus conexiones, ítems y tiempos asociados.
+2. Navegación entre escenarios: El jugador puede desplazarse entre escenarios conectados, gestionando el tiempo disponible.
+3. Recolección y descarte de ítems: El jugador puede recoger ítems disponibles en un escenario y descartarlos desde su inventario.
+4. Gestión de inventario del jugador: Se almacena información de los ítems recogidos, su valor y peso, permitiendo optimizar el puntaje.
+5. Cálculo del puntaje total: Se calcula el puntaje del jugador en función de los ítems recolectados.
+6. Control del tiempo restante: Se actualiza el tiempo disponible según las decisiones del jugador y los tiempos de transición entre escenarios.
+7. Liberación de memoria: Al finalizar el juego, se libera correctamente toda la memoria utilizada por las estructuras dinámicas.
 
 ## Compilar el código 
 
@@ -93,10 +93,10 @@ gcc *.c -o main.exe
 OPCION SELECCIONADA:
     ```
     Ingrese su opcion: 2
-    ```
+    
 
     INGRESAR EL NOMBRE DE JUGADOR:
-    ```
+    
     NOMBRE DEL JUGADOR 1: BRANDON
     NOMBRE DEL JUGADOR 2: JOSUE
     ```
