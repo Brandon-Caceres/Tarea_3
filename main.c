@@ -433,7 +433,7 @@ void seleccionOpcion(Jugador *player, HashMap *juego) {
     limpiarPantalla();
     printf("\nFIN DEL JUEGO\n");
     printf("Puntaje de %s: %d\n", player->nombre, player->puntaje);
-    printf("TIEMPO RESTANTE: ");
+    printf("TIEMPO RESTANTE: %f", player->tRestante);
     if (strcmp(player->actual->nombre, "Salida") == 0) printf("FELICIDADES, LOGRASTE ESCAPAR\n");
     else printf("TE FALTO TIEMPO PARA PODER ESCAPAR\n");
     reiniciar_juego(player, juego);
@@ -515,7 +515,9 @@ void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego) {
     }
     printf("\nFIN DEL JUEGO\n");
     printf("Puntaje de %s: %d\n", player1->nombre, player1->puntaje);
+    printf("TIEMPO RESTANTE: %f\n\n", player1->tRestante);
     printf("Puntaje de %s: %d\n", player2->nombre, player2->puntaje);
+    printf("TIEMPO RESTANTE: %f\n", player1->tRestante);
     if (strcmp(player1->actual->nombre, "Salida") == 0 && strcmp(player2->actual->nombre, "Salida") == 0){
         if (player1->puntaje > player2->puntaje) printf("%s HA GANADO!\n", player1->nombre);
         else if (player2->puntaje > player1->puntaje) printf("%s HA GANADO\n", player2->nombre);

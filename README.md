@@ -33,11 +33,9 @@ gcc *.c -o main.exe
 ```
 
 ## Problemas conocidos 
-1. No se puede volver a cargar el archivo CSV más de una vez por ejecución (evita duplicados).
-2. Posible pérdida de memoria si se cierra abruptamente sin liberar memoria.
-3. No hay validación de campos vacíos o malformateados en el CSV.
-4. Sensibilidad a mayúsculas y minúsculas a la hora de realizar una búsqueda.
-    * Ejemplo:  Si el artista en el CSV está como "Joseph Sullinger", buscar "joseph sullinger" no arrojará resultados.
+1. No se puede guardar y continuar el progreso del jugador entre ejecuciones.
+2. Posible pérdida de memoria si el programa finaliza abruptamente sin liberar estructuras.
+3. No hay validación robusta de entrada del usuario (puede causar errores con entradas inválidas).
 
 ## Estructura del código
 - extra.c      # Implementación de funbciones auxiliares
@@ -61,17 +59,6 @@ gcc *.c -o main.exe
 
     DATOS DEL JUGADOR:
     ```
-    JUGADOR: BRANDON
-    ESCENARIO: Entrada principal
-    DESCRIPCION: Una puerta rechinante abre paso a esta mansion olvidada por los dioses y los conserjes. El aire huele a humedad y a misterios sin resolver.
-    NO SE ENCONTRARON ITEMS EN ESTA SALA
-    TIEMPO RESTANTE: 10.00
-    EL INVENTARIO ESTA VACIO
-    PESO TOTAL: 0
-    PUNTAJE ACUMULADO: 0
-    DIRECCIONES POSIBLES: ABAJO 
-    ```
-    ```
     JUGADOR: JOSUE
     ESCENARIO: Entrada principal
     DESCRIPCION: Una puerta rechinante abre paso a esta mansion olvidada por los dioses y los conserjes. El aire huele a humedad y a misterios sin resolver.
@@ -94,22 +81,38 @@ gcc *.c -o main.exe
     4) REINICIAR PARTIDA
     5) REGRESAR AL MENU PRINCIPAL
     ``` 
-- 1) RECOGER ITEM(s): Se recoge un item, si hay disponibles.
-- 2) DESCARTAR ITEM(s): Se deja un item del inventario en el escenario en el que se encuentra el jugador.
-- 3) AVANZAR EN UNA DIRECCION: Se avanza en una dirreción (ARRIBA - ABAJO - DERECHA - IZQUIERDA).
-- 4) REINICIAR PARTIDA: Se vuelve al estado inicial de la partida.
-- 5) REGRESAR AL MENU PRINCIPAL: Se vuelveal menú principal.
+
+- "1) RECOGER ITEM(s)": Se recoge un item, si hay disponibles.
+- "2) DESCARTAR ITEM(s)": Se deja un item del inventario en el escenario en el que se encuentra el jugador.
+- "3) AVANZAR EN UNA DIRECCION": Se avanza en una dirreción (ARRIBA - ABAJO - DERECHA - IZQUIERDA).
+- "4) REINICIAR PARTIDA": Se vuelve al estado inicial de la partida.
+- "5) REGRESAR AL MENU PRINCIPAL": Se vuelveal menú principal.
 
 2) Jugar Multijugador: Al seleccionar esta opcion primero se pedira el nombre de usuario, luego se mostrara los datos del jugador y por último el menú de opciones para jugar
     
-    OPCION SELECCIONADA:
-    > Ingrese su opcion: 2
-    
-    INGRESAR EL NOMBRE DE JUGADOR:
-    > NOMBRE DEL JUGADOR 1: BRANDON
-    > NOMBRE DEL JUGADOR 2: JOSUE
+OPCION SELECCIONADA:
+    ```
+    Ingrese su opcion: 2
+    ```
 
-    DATOS DEL JUGADOR:
+    INGRESAR EL NOMBRE DE JUGADOR:
+    ```
+    NOMBRE DEL JUGADOR 1: BRANDON
+    NOMBRE DEL JUGADOR 2: JOSUE
+    ```
+
+DATOS DEL JUGADOR:
+    ```
+    JUGADOR: BRANDON
+    ESCENARIO: Entrada principal
+    DESCRIPCION: Una puerta rechinante abre paso a esta mansion olvidada por los dioses y los conserjes. El aire huele a humedad y a misterios sin resolver.
+    NO SE ENCONTRARON ITEMS EN ESTA SALA
+    TIEMPO RESTANTE: 10.00
+    EL INVENTARIO ESTA VACIO
+    PESO TOTAL: 0
+    PUNTAJE ACUMULADO: 0
+    DIRECCIONES POSIBLES: ABAJO 
+    ```
     ```
     JUGADOR: JOSUE
     ESCENARIO: Entrada principal
@@ -122,7 +125,7 @@ gcc *.c -o main.exe
     DIRECCIONES POSIBLES: ABAJO 
     ```
 
-    MENÚ DE OPCIONES:
+MENÚ DE OPCIONES:
     ```
     ========================================
           MMORPG NO LINEAL MULTIJUGADOR       
@@ -134,12 +137,13 @@ gcc *.c -o main.exe
     5) REINICIAR PARTIDA
     6) REGRESAR AL MENU PRINCIPAL
     ``` 
-- 1) RECOGER ITEM(s): Se recoge un item, si hay disponibles.
-- 2) DESCARTAR ITEM(s): Se deja un item del inventario en el escenario en el que se encuentra el jugador.
-- 3) AVANZAR EN UNA DIRECCION: Se avanza en una dirreción (ARRIBA - ABAJO - DERECHA - IZQUIERDA).
-- 4) SALTAR TURNO: Se termina el turno del jugador que esta jugando y se pasa al siguiente.
-- 5) REINICIAR PARTIDA: Se vuelve al estado inicial de la partida.
-- 6) REGRESAR AL MENU PRINCIPAL: Se vuelveal menú principal.
+
+- "1) RECOGER ITEM(s)": Se recoge un item, si hay disponibles.
+- "2) DESCARTAR ITEM(s)": Se deja un item del inventario en el escenario en el que se encuentra el jugador.
+- "3) AVANZAR EN UNA DIRECCION": Se avanza en una dirreción (ARRIBA - ABAJO - DERECHA - IZQUIERDA).
+- "4) SALTAR TURNO": Se termina el turno del jugador que esta jugando y se pasa al siguiente.
+- "5) REINICIAR PARTIDA": Se vuelve al estado inicial de la partida.
+- "6) REGRESAR AL MENU PRINCIPAL": Se vuelveal menú principal.
 
 3) Salir: Se finaliza el juego.
 
@@ -163,9 +167,9 @@ gcc *.c -o main.exe
 - Redacción del README.md
 
 ## Aspectos a Mejorar
-1. Validar formato del CSV al cargar canciones.
-2. Permitir guardar canciones nuevas desde la consola.
-3. Implementar guardado de playlists personalizadas.
-4. Crear menú de ayuda para usuarios nuevos.
+1. Validar la entrada del usuario para evitar errores por opciones inválidas.
+2. Permitir guardar el progreso del jugador (ítems recolectados, escenario actual, etc.).
+3. Añadir un menú de ayuda que explique los comandos disponibles y cómo navegar el juego.
+4. Optimizar el uso de memoria y revisar posibles fugas si el juego se cierra abruptamente.
 
 # Fin :)
