@@ -448,7 +448,6 @@ void reiniciar_jugador(Jugador * player, HashMap * juego){
         free(item);
     }
     list_clean(player->inventario);
-    free(player->inventario);
     player->peso = 0;
     player->puntaje = 0;
     player->tRestante = 10;
