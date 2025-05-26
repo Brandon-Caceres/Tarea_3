@@ -49,7 +49,7 @@ typedef struct{
 //Funcion encargada de mostrar el menu principal
 void mostrarMenuPrincipal() {
     limpiarPantalla();
-    //encontre el meme jajaja
+    //encontre el meme jajajaja
     /*albion online es un mmorpg no lineal en el que escribes 
     tu propia historia sin limitarte a seguir un camino prefijado, 
     explora un amplio mundo abierto con cinco biomas unicos, todo 
