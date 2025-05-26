@@ -49,6 +49,7 @@ typedef struct{
 //Funcion encargada de mostrar el menu principal
 void mostrarMenuPrincipal() {
     limpiarPantalla();
+    //encontre el meme jajaja
     /*albion online es un mmorpg no lineal en el que escribes 
     tu propia historia sin limitarte a seguir un camino prefijado, 
     explora un amplio mundo abierto con cinco biomas unicos, todo 
@@ -450,7 +451,7 @@ void reiniciar_jugador(Jugador * player, HashMap * juego){
     list_clean(player->inventario);
     player->peso = 0;
     player->puntaje = 0;
-    player->tRestante = 10;
+    player->tRestante = 15;
 }
 
 //Función para reiniciar la partida al estado inicial
@@ -633,7 +634,7 @@ Jugador * crear_jugador(char nombre[], HashMap * juego){
     player->inventario = list_create();
     player->peso = 0;
     player->puntaje = 0;
-    player->tRestante = 10;
+    player->tRestante = 15;
 
     return player;
 }
