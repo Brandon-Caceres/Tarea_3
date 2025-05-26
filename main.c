@@ -575,6 +575,8 @@ void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego)
             case '5':
                 reiniciar_juego(player1, juego);
                 reiniciar_jugador(player2, juego);
+                turno = 0;
+                mov = 0;
                 break;
             case '6':
                 reiniciar_juego(player1, juego);
