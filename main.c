@@ -638,16 +638,6 @@ Jugador * crear_jugador(char nombre[], HashMap * juego){
     return player;
 }
 
-//Función para limpiar los datos de un jugador
-void liberar_jugador(Jugador *player) {
-    for (Item *item = list_first(player->inventario); item != NULL; item = list_next(player->inventario)) {
-        free(item);
-    }
-    list_clean(player->inventario);
-    free(player->inventario);
-    free(player);
-}
-
 //Función principal
 int main(){
     char opcion;
@@ -710,8 +700,8 @@ int main(){
 
     //Se libera la memoria
     limpiar_juego(juego);
-    liberar_jugador(p);
-    liberar_jugador(p1);
-    liberar_jugador(p2);
+    free(p);
+    free(p1);
+    free(p2);
     return 0;
 }
