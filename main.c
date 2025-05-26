@@ -184,6 +184,7 @@ void leer_escenarios(HashMap * juego){
     free(claves);    
 }
 
+//Funcion para mostrar el inventario de los jugadores
 void mostrar_inventario(Jugador * player){
     if (player->inventario != NULL && list_first(player->inventario) != NULL){
         puts("INVENTARIO: ");
