@@ -369,7 +369,7 @@ int avanzarEscenario(Jugador *player) {
             if (actual->dir_posibles.arriba)
                 player->actual = actual->dir_posibles.arriba;
             else{
-                //Mesaje en caso de que no se pueda mover hacia arriba
+                //Mensaje en caso de que no se pueda mover hacia arriba
                 printf("NO HAY UN CAMINO HACIA ARRIBA.\n");
                 return 0;
             }
@@ -380,7 +380,7 @@ int avanzarEscenario(Jugador *player) {
             if (actual->dir_posibles.abajo)
                 player->actual = actual->dir_posibles.abajo;
             else{
-                //Mesaje en caso de que no se pueda mover hacia abajo
+                //Mensaje en caso de que no se pueda mover hacia abajo
                 printf("NO HAY UN CAMINO HACIA ABAJO.\n");
                 return 0;
             }
@@ -391,7 +391,7 @@ int avanzarEscenario(Jugador *player) {
             if (actual->dir_posibles.izquierda)
                 player->actual = actual->dir_posibles.izquierda;
             else{
-                //Mesaje en caso de que no se pueda mover hacia la izquierda
+                //Mensaje en caso de que no se pueda mover hacia la izquierda
                 printf("NO HAY UN CAMINO HACIA LA IZQUIERDA.\n");
                 return 0;
             }
@@ -402,7 +402,7 @@ int avanzarEscenario(Jugador *player) {
             if (actual->dir_posibles.derecha)
                 player->actual = actual->dir_posibles.derecha;
             else{
-                //Mesaje en caso de que no se pueda mover hacia la derecha
+                //Mensaje en caso de que no se pueda mover hacia la derecha
                 printf("NO HAY UN CAMINO HACIA LA DERECHA.\n");
                 return 0;
             }
@@ -466,7 +466,7 @@ void seleccionOpcion(Jugador *player, HashMap *juego) {
     char op;
     
     //Se inicia un bucle que termina cuando el jugador haya finalizado su partida, ya sea por tiempo o por llegar a la salida
-    while ((player->tRestante > 0 && strcmp(player->actual->nombre, "Salida") != 0))
+    while ((player->tRestante > 0 && strcmp(player->actual->esFinal, "Si") != 0))
     {
         //Se muestra los datos del jugador despues de cada turno
         limpiarPantalla();
@@ -504,9 +504,11 @@ void seleccionOpcion(Jugador *player, HashMap *juego) {
 
     //Mensaje para mostrar como termino la partida el jugador
     limpiarPantalla();
-    printf("\nFIN DEL JUEGO\n");
-    printf("PUNTAJE DE %s: %d\n", player->nombre, player->puntaje);
-    if (strcmp(player->actual->nombre, "Salida") == 0) printf("FELICIDADES, LOGRASTE ESCAPAR\n");
+    if (strcmp(player->actual->esFinal, "Si") == 0){
+        printf("\nFIN DEL JUEGO\n");
+        printf("PUNTAJE DE %s: %d\n", player->nombre, player->puntaje);
+        printf("FELICIDADES, LOGRASTE ESCAPAR\n");
+    }
     else printf("TE FALTO TIEMPO PARA PODER ESCAPAR\n");
 
     //El jugador vuelve a su estado inicial
@@ -654,10 +656,10 @@ int main(){
     Jugador *p1 = NULL;
     Jugador *p2 = NULL;
 
-    //Se guardan los escenarios
+    //Se cargan los escenarios
     leer_escenarios(juego);
     do{
-        //S muestra un menú principal y se selecciona una opción
+        //Se muestra un menú principal y se selecciona una opción
         mostrarMenuPrincipal();
         printf("Ingrese su opcion: ");
         scanf(" %c", &opcion);
