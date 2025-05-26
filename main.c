@@ -575,11 +575,11 @@ void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego)
                 break;
             case '5':
                 reiniciar_juego(player1, juego);
-                reiniciar_juego(player2, juego);
+                reiniciar_jugador(player2, juego);
                 break;
             case '6':
                 reiniciar_juego(player1, juego);
-                reiniciar_juego(player2, juego);
+                reiniciar_jugador(player2, juego);
                 return;
             default:
                 printf("OPCION NO VALIDA.\n");
