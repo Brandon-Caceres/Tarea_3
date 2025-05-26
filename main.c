@@ -184,6 +184,16 @@ void leer_escenarios(HashMap * juego){
     free(claves);    
 }
 
+void mostrar_inventario(Jugador * player){
+    if (player->inventario != NULL && list_first(player->inventario) != NULL){
+        puts("INVENTARIO: ");
+        for (Item * objeto = list_first(player->inventario); objeto != NULL; objeto = list_next(player->inventario)){
+            printf("  - %s, %dkg, valor %dpts\n", objeto->nombre, objeto->peso, objeto->valor);
+        }
+    }
+    else printf("EL INVENTARIO ESTA VACIO\n");
+}
+
 //Función para mostrar los escenarios y los datos de cada jugador en un momento determinado
 void mostrar_escenario(Jugador * player){
     printf("JUGADOR: %s\n", player->nombre);
@@ -203,13 +213,7 @@ void mostrar_escenario(Jugador * player){
     printf("TIEMPO RESTANTE: %d segundos\n", player->tRestante);
     
     //Muestra si hay algo en el invntario o si esta vacio
-    if (player->inventario != NULL && list_first(player->inventario) != NULL){
-        puts("INVENTARIO: ");
-        for (Item * objeto = list_first(player->inventario); objeto != NULL; objeto = list_next(player->inventario)){
-            printf("  - %s, %dkg, valor %dpts\n", objeto->nombre, objeto->peso, objeto->valor);
-        }
-    }
-    else printf("EL INVENTARIO ESTA VACIO\n");
+    mostrar_inventario(player);
 
     //Muestra el peso total y el puntaje acumulado
     printf("PESO TOTAL: %dkg\n", player->peso);
@@ -508,6 +512,7 @@ void seleccionOpcion(Jugador *player, HashMap *juego) {
         printf("\nFIN DEL JUEGO\n");
         printf("PUNTAJE DE %s: %d\n", player->nombre, player->puntaje);
         printf("FELICIDADES, LOGRASTE ESCAPAR\n");
+        mostrar_inventario(player);
     }
     else printf("TE FALTO TIEMPO PARA PODER ESCAPAR\n");
 
@@ -604,15 +609,27 @@ void seleccionOpcionMJ(Jugador *player1, Jugador *player2, HashMap *juego)
     printf("\nPuntaje de %s: %d\n", player1->nombre, player1->puntaje);
     printf("Puntaje de %s: %d\n", player2->nombre, player2->puntaje);
     if (strcmp(player1->actual->esFinal, "Si") == 0 && strcmp(player2->actual->esFinal, "Si") == 0){
-        if (player1->puntaje > player2->puntaje) printf("\n%s HA GANADO!\n", player1->nombre);
-        else if (player2->puntaje > player1->puntaje) printf("\n%s HA GANADO\n", player2->nombre);
+        if (player1->puntaje > player2->puntaje) {
+            printf("\n%s HA GANADO!\n", player1->nombre);
+            mostrar_inventario(player1);
+        }
+        else if (player2->puntaje > player1->puntaje) {
+            printf("\n%s HA GANADO\n", player2->nombre);
+            mostrar_inventario(player2);
+        }
         else printf("ES UN EMPATE\n");
     }
     else{
-        if (strcmp(player1->actual->nombre, "Salida") == 0) printf("\n%s HA GANADO\n", player1->nombre);
+        if (strcmp(player1->actual->nombre, "Salida") == 0) {
+            printf("\n%s HA GANADO\n", player1->nombre);
+            mostrar_inventario(player1);
+        }
         else printf("%s TE FALTO TIEMPO PARA PODER ESCAPAR\n", player1->nombre);
 
-        if (strcmp(player2->actual->nombre, "Salida") == 0) printf("\n%s HA GANADO\n", player2->nombre);
+        if (strcmp(player2->actual->nombre, "Salida") == 0) {
+            printf("\n%s HA GANADO\n", player2->nombre);
+            mostrar_inventario(player2);
+        }
         else printf("%s TE FALTO TIEMPO PARA PODER ESCAPAR\n", player2->nombre);
     }
     
